@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero KPI Diario · Logística Total SRL</title>
+<style>
+:root {
+  --color-fg: #1f2328;
+  --color-fg-muted: #667085;
+  --color-bg: #f3f4f6;
+  --color-panel: #ffffff;
+  --color-border-line: #e3e6eb;
+  --color-ok: #1e9e5a;
+  --color-warn: #ef8a17;
+  --color-bad: #d64545;
+  --font-anthropic-sans: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --font-anthropic-serif: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --cds-font-size-caption: 12px;
+  --cds-font-size-body: 14px;
+  --cds-font-size-heading: 16px;
+  --cds-font-size-title: 22px;
+  --cds-font-weight-medium: 600;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-gap-lg: 16px; --cds-gap-xl: 24px;
+  --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 16px; --cds-pad-xl: 24px;
+  --cds-radius: 10px;
+  --cds-chart-muted: #c3c9d3;
+  --cds-chart-reference: #8c8f94;
+  --cds-chart-grid: #e3e6eb;
+  --cds-chart-axis: #c3c9d3;
+  --cds-text-secondary: #667085;
+  --cds-surface-popover: #ffffff;
+  --cds-border: #e3e6eb;
+  --cds-shadow-popover: 0 4px 16px rgba(15, 23, 42, 0.12);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+.dash-select { font: inherit; font-size: 13px; border: 1px solid #cfd4dc; border-radius: 6px; padding: 6px 28px 6px 8px; background-color: #fff; color: var(--color-fg); }
+.dash-skeleton { position: relative; color: transparent !important; }
+.dash-skeleton > * { visibility: hidden; }
+.dash-skeleton::after { content: ""; position: absolute; inset: 0; border-radius: var(--cds-radius); background: linear-gradient(90deg, #eceff3 25%, #f6f7f9 50%, #eceff3 75%); background-size: 200% 100%; animation: kp-shimmer 1.4s infinite; }
+@keyframes kp-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .dash-skeleton::after { animation: none; } }
+
+
+#dash-root { --dash-gutter: 0; }
+.kp { gap: 0 !important; font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+.kp-main { display: flex; flex-direction: column; gap: var(--cds-gap-xl); padding-block: 18px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-width: 1750px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+.lt-brand { background: linear-gradient(90deg, #0d0f12 0%, #1a1d22 100%); display: flex; align-items: center; gap: 16px; padding: 12px 22px; flex-wrap: wrap; }
+.lt-logo { height: 46px; width: auto; filter: drop-shadow(rgba(255, 255, 255, 0.25) 0 0 1px); }
+.lt-ttl { display: flex; flex-direction: column; line-height: 1.15; margin: 0; font-size: inherit; font-weight: inherit; }
+.lt-ttl b { color: #fff; font-size: 20px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase; }
+.lt-ttl span { color: #f07f1d; font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-top: 3px; }
+.lt-hright { margin-left: auto; display: flex; gap: 8px; align-items: center; font-size: 12px; flex-wrap: wrap; }
+.lt-chip { background: #2a2e35; color: #d5d8de; padding: 5px 10px; border-radius: 20px; white-space: nowrap; border: 1px solid #363b44; font: inherit; font-size: 12px; }
+.lt-chip b { color: #fff; font-weight: 600; }
+.lt-click { cursor: pointer; }
+.lt-click:hover { background: #353a42; }
+.lt-click:disabled { opacity: .6; cursor: progress; }
+.lt-click:focus-visible, .lt-nav button:focus-visible { outline: 2px solid #f07f1d; outline-offset: 2px; }
+.lt-dot::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; background: #2ecc71; }
+.lt-dot.is-bad::before { background: #e5534b; }
+.lt-nav { background: #1a1d22; display: flex; gap: 6px; padding: 6px 20px; flex-wrap: wrap; align-items: center; border-top: 1px solid #2c3037; border-bottom: 3px solid #f07f1d; position: sticky; top: 0; z-index: 20; }
+.lt-nav button { background: transparent; color: #d5d8de; border: 0; padding: 7px 13px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; font-family: inherit; }
+.lt-nav button:hover { background: #3a3f48; }
+.lt-nav button[aria-selected="true"] { background: #3a3f48; color: #fff; box-shadow: inset 0 -3px 0 #f07f1d; }
+.lt-grp { display: flex; align-items: center; gap: 2px; border: 1px solid #4a505a; border-radius: 8px; padding: 2px 4px 2px 10px; }
+.lt-grp > span { color: #f07f1d; font-weight: 800; font-size: 12px; margin-right: 4px; letter-spacing: .5px; }
+.lt-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 10px; padding: 16px 18px; max-width: 80ch; line-height: 1.55; }
+.lt-card .kp-h2 { margin-bottom: 6px; }
+.lt-card ol, .lt-card ul { padding-left: 1.3em; margin: 6px 0 0; }
+.lt-cfgbar { display: flex; gap: var(--cds-gap-lg); align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.lt-btn { display: inline-block; background: #f07f1d; color: #fff; text-decoration: none; border-radius: 6px; padding: 9px 16px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.lt-btn:hover { background: #d96d10; }
+.lt-btn:focus-visible { outline: 2px solid #1a1d22; outline-offset: 2px; }
+.lt-cfghelp { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.lt-cfgtable td.kp-l, .lt-cfgtable th, .lt-cfgtable thead th { text-align: left; }
+.lt-pill { display: inline-block; padding: 2px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; }
+.lt-pill.si { background: #dff3e8; color: #11663a; }
+.lt-pill.no { background: #eef0f3; color: #667085; }
+.lt-cfgtable tr.is-off th, .lt-cfgtable tr.is-off td { color: var(--color-fg-muted); }
+.kp-alert-title { display: block; margin-bottom: 4px; }
+.kp-alert-list { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 640px) { .lt-hright { margin-left: 0; } .lt-brand { padding: 12px 16px; } .lt-nav { padding: 6px 12px; } }
+.kp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.kp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.kp-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.kp-lead { margin: 0; font-size: var(--cds-font-size-body); max-width: 70ch; }
+.kp-lead b { font-variant-numeric: tabular-nums; }
+.kp-alert { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 80ch; }
+.kp-alert .kp-bad { color: var(--color-bad); font-weight: var(--cds-font-weight-medium); }
+.kp-controls { display: flex; flex-wrap: wrap; gap: var(--cds-gap-lg); align-items: end; }
+.kp-field { display: flex; flex-direction: column; gap: var(--cds-gap-xs); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: .04em; }
+.kp-field input, .kp-field select { font: inherit; font-size: var(--cds-font-size-body); text-transform: none; letter-spacing: 0; color: var(--color-fg); }
+.kp-field input { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 6px 10px; }
+.kp-legend { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-left: auto; flex-wrap: wrap; }
+.kp-legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--kp-dot); }
+.kp-l-ok { --kp-dot: var(--color-ok); } .kp-l-bad { --kp-dot: var(--color-bad); } .kp-l-na { --kp-dot: var(--cds-chart-muted); }
+.kp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--cds-gap-md); min-height: 180px; }
+.kp-card { position: relative; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; border-top: 4px solid var(--kp-state, var(--color-border-line)); }
+.kp-card.is-ok { --kp-state: var(--color-ok); } .kp-card.is-bad { --kp-state: var(--color-bad); }
+.kp-card-top { display: flex; justify-content: space-between; gap: var(--cds-gap-sm); align-items: baseline; }
+.kp-area { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: .05em; }
+.kp-name { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); line-height: 1.3; }
+.kp-owner { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kp-owner.is-empty { font-style: italic; }
+.kp-valrow { display: flex; align-items: center; gap: var(--cds-gap-sm); flex-wrap: wrap; }
+.kp-val { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kp-pill { font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--kp-state, var(--cds-chart-muted)) 16%, transparent); color: var(--kp-state, var(--color-fg-muted)); white-space: nowrap; }
+.kp-meta { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; display: flex; justify-content: space-between; gap: var(--cds-gap-sm); flex-wrap: wrap; }
+.kp-spark { width: 100%; height: 52px; display: block; }
+.kp-spark text { fill: var(--cds-text-secondary); font-size: 10px; }
+.kp-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 4px 8px; font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; font-variant-numeric: tabular-nums; }
+.kp-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); }
+.kp-sec { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.kp-h2 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.kp-sub { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kp-scroll { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.kp-matrix { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.kp-matrix th, .kp-matrix td { padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); text-align: center; white-space: nowrap; }
+.kp-matrix thead th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); background: var(--color-panel); }
+.kp-matrix th.kp-rowh { text-align: left; position: sticky; left: 0; background: var(--color-panel); font-weight: var(--cds-font-weight-medium); color: var(--color-fg); max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.kp-matrix td.is-ok { background: color-mix(in srgb, var(--color-ok) 18%, transparent); }
+.kp-matrix td.is-bad { background: color-mix(in srgb, var(--color-bad) 20%, transparent); }
+.kp-matrix td.is-na { color: var(--color-fg-muted); }
+.kp-matrix th.is-sel { color: var(--color-fg); text-decoration: underline; }
+.kp-help { font-size: var(--cds-font-size-body); }
+.kp-help summary { cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+.kp-help ol { margin: var(--cds-gap-sm) 0 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: var(--cds-gap-xs); max-width: 75ch; }
+.kp-help code { font-size: .95em; }
+.kp-updbar { display: flex; gap: var(--cds-gap-md); align-items: center; flex-wrap: wrap; }
+.kp-refresh { font-weight: var(--cds-font-weight-medium); }
+.kp-tabs { display: flex; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); margin-top: var(--cds-gap-sm); flex-wrap: wrap; }
+.kp-tab { font: inherit; font-size: var(--cds-font-size-body); background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 14px; color: var(--color-fg-muted); cursor: pointer; margin-bottom: -1px; }
+.kp-tab:hover { color: var(--color-fg); }
+.kp-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.kp-tab:focus-visible, .kp-chip:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.kp-view { display: flex; flex-direction: column; gap: var(--cds-gap-xl); }
+.kp-daybar, .kp-periodbar { display: flex; gap: var(--cds-gap-lg); align-items: end; flex-wrap: wrap; }
+.kp-daytext { display: flex; flex-direction: column; gap: var(--cds-gap-xs); flex: 1 1 320px; min-width: 0; }
+.kp-quick { display: flex; gap: var(--cds-gap-xs); flex-wrap: wrap; }
+.kp-chip { font: inherit; font-size: var(--cds-font-size-caption); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); cursor: pointer; }
+.kp-chip:hover { border-color: var(--color-fg-muted); }
+.kp-chip.is-on { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.kp-table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.kp-table th, .kp-table td { padding: 7px 10px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; text-align: right; }
+.kp-table thead th { position: sticky; top: 0; z-index: 1; background: var(--color-panel); color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); vertical-align: bottom; }
+.kp-table .kp-l { text-align: left; }
+.kp-table tbody th { text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg); }
+.kp-table tbody tr:hover td, .kp-table tbody tr:hover th { background: color-mix(in srgb, var(--color-fg) 4%, transparent); }
+.kp-table .kp-muted { color: var(--color-fg-muted); }
+.kp-table td.is-ok { background: color-mix(in srgb, var(--color-ok) 16%, transparent); }
+.kp-table td.is-bad { background: color-mix(in srgb, var(--color-bad) 18%, transparent); }
+.kp-daily th:first-child, .kp-daily td:first-child { position: sticky; left: 0; background: var(--color-panel); z-index: 1; text-align: left; }
+.kp-daily thead th:first-child { z-index: 2; }
+.kp-daily thead th { white-space: normal; min-width: 84px; max-width: 120px; line-height: 1.25; }
+.kp-tall { max-height: 560px; overflow: auto; }
+.kp-hname { display: block; color: var(--color-fg); }
+.kp-hobj { display: block; margin-top: 2px; font-weight: 400; color: var(--color-fg-muted); font-size: 11px; }
+.kp-hresp { font-style: italic; }
+.kp-bar { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.kp-bar i { display: inline-block; height: 6px; width: 56px; border-radius: 3px; background: color-mix(in srgb, var(--color-fg) 10%, transparent); overflow: hidden; }
+.kp-bar i b { display: block; height: 100%; background: var(--kp-barc, var(--color-ok)); }
+.kp-trend { position: relative; min-height: 170px; }
+.kp-trend svg { display: block; width: 100%; }
+.kp-trend .tick text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); }
+.kp-trend .domain { stroke: var(--cds-chart-axis); }
+.kp-trend .tick line { stroke: var(--cds-chart-grid); }
+.kp-areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: var(--cds-gap-md); min-height: 200px; }
+.kp-apanel { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: flex; flex-direction: column; min-width: 0; }
+.kp-ahead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); padding-bottom: var(--cds-gap-sm); border-bottom: 1px solid var(--color-border-line); }
+.kp-ahead h3 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.kp-ahead span { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.kp-row { position: relative; display: grid; grid-template-columns: 6px minmax(0, 1.4fr) minmax(0, 1fr) minmax(90px, 0.9fr); gap: var(--cds-gap-md); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-border-line); }
+.kp-row:last-child { border-bottom: 0; }
+.kp-row .kp-dot { width: 6px; height: 100%; min-height: 34px; border-radius: 3px; background: var(--kp-state, var(--cds-chart-muted)); }
+.kp-row.is-ok { --kp-state: var(--color-ok); } .kp-row.is-bad { --kp-state: var(--color-bad); }
+.kp-rname { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kp-rname b { font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-body); overflow-wrap: anywhere; }
+.kp-rname span { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kp-rval { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.kp-rval .kp-val { font-size: 1.5rem; }
+.kp-rval small { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.kp-row .kp-spark { height: 36px; }
+@media (max-width: 520px) { .kp-row { grid-template-columns: 6px minmax(0, 1fr) auto; } .kp-row .kp-spark { grid-column: 2 / -1; } }
+[data-dash-source-state=refreshing] { opacity: .5; }
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* Motor mínimo del tablero: lee la planilla de Google Sheets publicada y redibuja la página. */
+(function () {
+  // ===== Configuración =====
+  // ID de la planilla Reporte KPI y nombre de cada hoja que se lee.
+  const SHEET_ID = '1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc';
+  const HOJAS = {
+    deposito: 'Deposito',
+    entrega: 'Entrega',
+    seguridad: 'Seguridad',
+    flota: 'Flota',
+    config_kpi: 'Config KPI'
+  };
+  // Minutos que se reutiliza una lectura antes de volver a pedirla a la planilla (el botón "Actualizar datos" la fuerza).
+  const MINUTOS_CACHE = 60;
+
+  const fuentes = {};
+  const loaders = {};
+  const calcs = {};
+  const draws = [];
+  const onDataFns = [];
+  let params = {};
+  let pendiente = false;
+
+  const urlHoja = (nombre) =>
+    'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(nombre);
+
+  function parseCSV(t) {
+    const rows = []; let row = [], f = '', q = false;
+    for (let i = 0; i < t.length; i++) {
+      const c = t[i];
+      if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+      else if (c === '"') q = true;
+      else if (c === ',') { row.push(f); f = ''; }
+      else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+      else if (c !== '\r') f += c;
+    }
+    if (f !== '' || row.length) { row.push(f); rows.push(row); }
+    return rows;
+  }
+
+  function cacheGet(id) {
+    try {
+      const v = JSON.parse(localStorage.getItem('kpi:' + id) || 'null');
+      if (v && Date.now() - v.at < MINUTOS_CACHE * 60000) return v.values;
+    } catch (e) { /* sin almacenamiento */ }
+    return null;
+  }
+  function cacheSet(id, values) {
+    try { localStorage.setItem('kpi:' + id, JSON.stringify({ at: Date.now(), values })); } catch (e) { /* lleno o bloqueado */ }
+  }
+
+  function aplicarLoader(id, values) {
+    const L = loaders[id];
+    const answer = { values };
+    let out = L ? L.fn({ answer, args: {}, call: null, read: null }) : values;
+    let data, columns;
+    if (Array.isArray(out)) { data = out; columns = out.length ? Object.keys(out[0]) : []; }
+    else { data = out.rows || out.data || []; columns = out.columns || []; }
+    data.columns = columns;
+    return data;
+  }
+
+  async function cargar(id, forzar) {
+    const s = fuentes[id] || (fuentes[id] = { status: 'loading', data: [], v: 0 });
+    if (s.status === 'ok') s.refreshing = true; else s.status = 'loading';
+    agendar();
+    try {
+      let values = forzar ? null : cacheGet(id);
+      if (!values) {
+        const r = await fetch(urlHoja(HOJAS[id]) + '&_=' + Date.now());
+        if (!r.ok) throw new Error('La planilla respondió ' + r.status);
+        const txt = await r.text();
+        if (/^\s*</.test(txt)) throw new Error('La planilla no es pública: compartila como "Cualquier persona con el vínculo".');
+        values = parseCSV(txt);
+        cacheSet(id, values);
+      }
+      s.data = aplicarLoader(id, values);
+      s.status = 'ok'; s.message = '';
+    } catch (e) {
+      console.error('[tablero] ' + id, e);
+      if (s.status !== 'ok') { s.status = 'error'; s.data = []; }
+      s.message = String(e.message || e);
+    }
+    s.refreshing = false; s.v++;
+    agendar();
+  }
+
+  function dataDe(id) {
+    if (calcs[id]) {
+      const c = calcs[id];
+      const ins = c.inputs.map(dataDe);
+      if (ins.some((x) => x.status === 'error')) return { status: 'error', data: null, refreshing: false };
+      if (ins.some((x) => x.status !== 'ok')) return { status: 'loading', data: null, refreshing: false };
+      const key = c.inputs.map((i) => (fuentes[i] ? fuentes[i].v : calcs[i] ? calcs[i].key : '')).join('|');
+      if (c.key !== key) { c.value = c.fn(...ins.map((x) => (Array.isArray(x.data) ? x.data : []))); c.key = key; }
+      return { status: 'ok', data: c.value, refreshing: ins.some((x) => x.refreshing) };
+    }
+    const s = fuentes[id];
+    if (!s) return { status: 'missing', data: [], refreshing: false };
+    return { status: s.status, data: s.data, message: s.message, refreshing: !!s.refreshing, columns: s.data && s.data.columns };
+  }
+
+  function visible(el) { return !el.closest('[hidden]'); }
+
+  function render() {
+    pendiente = false;
+    onDataFns.forEach((fn) => { try { fn(); } catch (e) { console.error(e); } });
+    draws.forEach(({ name, fn }) => {
+      document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => {
+        if (!visible(el)) return;
+        try {
+          if (typeof fn === 'function') fn(el);
+          else {
+            if (!el.__made) { el.replaceChildren(); el.__made = { v: fn.mount ? fn.mount(el) : undefined }; }
+            if (fn.update) fn.update(el, el.__made.v);
+          }
+        } catch (e) { console.error('[tablero] dibujo ' + name, e); }
+      });
+    });
+  }
+  function agendar() { if (!pendiente) { pendiente = true; requestAnimationFrame(render); } }
+
+  window.dash = {
+    colors: ['#2a78d6', '#1b9aaa', '#7a4fb8', '#f07f1d', '#1e9e5a', '#d64545', '#7a8b99', '#d9c8a0'],
+    data: dataDe,
+    loader(id, o) { loaders[id] = o; },
+    calc(id, o) { calcs[id] = { inputs: o.inputs, fn: o.fn, key: null, value: null }; },
+    draw(name, fn) { if (fn === undefined) { agendar(); return; } draws.push({ name, fn }); },
+    onData(fn) { onDataFns.push(fn); },
+    params() { return Object.assign({}, params); },
+    setParams(o) {
+      Object.keys(o).forEach((k) => { if (o[k] === null || o[k] === undefined) delete params[k]; else params[k] = o[k]; });
+      agendar();
+    },
+    resetParams() { params = {}; agendar(); },
+    refresh(id) { if (HOJAS[id]) cargar(id, true); },
+    setLink(id) { try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; } },
+    start() {
+      Object.keys(HOJAS).forEach((id) => cargar(id, false));
+      const mo = new MutationObserver(agendar);
+      document.querySelectorAll('.kp-view').forEach((v) => mo.observe(v, { attributes: true, attributeFilter: ['hidden'] }));
+      let w = window.innerWidth;
+      window.addEventListener('resize', () => { if (window.innerWidth !== w) { w = window.innerWidth; agendar(); } });
+      agendar();
+    }
+  };
+})();
+
+</script>
+</head>
+<body>
+<div id="dash-root">
+
+
+<div class="kp">
+  <header class="lt-brand" id="encabezado">
+    <img class="lt-logo" src="data:image/png;base64,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" alt="Logística Total SRL">
+    <h1 class="lt-ttl"><b>Logística Total SRL</b><span>Tablero KPI diario</span></h1>
+    <div class="lt-hright" id="estado-datos">
+      <span class="lt-chip">Último día con datos: <b data-draw="ultimoDia" data-source="estado">—</b></span>
+      <span class="lt-chip"><span class="lt-dot is-ok" id="kp-conn-ok">Google Sheets en línea</span><span class="lt-dot is-bad" id="kp-conn-bad" hidden>Sin conexión con Google Sheets</span></span>
+      <button type="button" class="lt-chip lt-click" id="kp-actualizar">⟳ Actualizar datos</button>
+    </div>
+  </header>
+  <nav class="lt-nav" id="navegacion" role="tablist" aria-label="Vistas">
+    <button type="button" role="tab" data-tab="vista-info" aria-selected="false">INFO</button>
+    <div class="lt-grp"><span>KPI</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button></div>
+    <button type="button" role="tab" data-tab="vista-config" aria-selected="false">CONFIGURACIÓN</button>
+  </nav>
+
+  <div class="kp-main">
+  <div class="kp-controls" id="controles">
+    <label class="kp-field">Área
+      <select class="dash-select" id="kp-area" aria-label="Área">
+        <option value="">Todas las áreas</option>
+        <option value="Depósito">Depósito</option>
+        <option value="Entrega">Entrega</option>
+        <option value="Seguridad">Seguridad</option>
+        <option value="Flota">Flota</option>
+      </select>
+    </label>
+    <p class="kp-sub" id="nota-domingos">Todo el reporte considera de lunes a sábado. Los domingos no se cuentan.</p>
+    <div class="kp-legend" id="leyenda"><span class="kp-l-ok">En objetivo</span><span class="kp-l-bad">Fuera de objetivo</span><span class="kp-l-na">Sin objetivo o sin dato</span></div>
+  </div>
+
+  <section class="kp-view" id="vista-tablero" role="tabpanel">
+  <div class="kp-daybar" id="dia">
+    <label class="kp-field">Día
+      <input type="date" id="kp-fecha" data-draw="fechaInput" aria-label="Día a revisar">
+    </label>
+    <div class="kp-daytext">
+      <p class="kp-lead" id="resumen">El <b data-draw="fechaTxt">—</b>, <b data-draw="okCount" data-source="estado">—</b> de <b data-draw="totCount" data-source="estado">—</b> indicadores con objetivo están dentro del target.</p>
+      <p class="kp-alert" id="alertas" data-draw="fuera" data-source="estado"></p>
+    </div>
+  </div>
+
+  <section class="kp-sec" id="tendencia">
+    <h2 class="kp-h2">Cumplimiento diario</h2>
+    <p class="kp-sub">Porcentaje de indicadores con objetivo que estuvieron dentro del target cada día, últimos 30 días hábiles hasta el día elegido. Tocá una barra para ver ese día.</p>
+    <div class="kp-trend" data-draw="tendencia" data-source="estado"></div>
+  </section>
+
+  <section class="kp-sec" id="scorecard">
+    <h2 class="kp-h2">Indicadores del día por área</h2>
+    <p class="kp-sub">Valor del día, objetivo, responsable y evolución de los últimos 30 registros (línea punteada = objetivo). Los que están fuera de objetivo van primero.</p>
+    <div class="kp-areas" data-draw="scorecard" data-source="estado"></div>
+  </section>
+
+  <section class="kp-sec" id="semaforo">
+    <h2 class="kp-h2">Semáforo de los últimos 14 días</h2>
+    <p class="kp-sub">Indicadores con objetivo. Verde: dentro del target. Rojo: fuera. Vacío: sin dato ese día.</p>
+    <div class="kp-scroll"><table class="kp-matrix" data-draw="matrix" data-source="estado" aria-label="Semáforo diario por indicador"></table></div>
+  </section>
+
+  </section>
+
+  <section class="kp-view" id="vista-info" role="tabpanel" hidden>
+    <div class="lt-card" id="info-tablero">
+      <h2 class="kp-h2">Qué muestra este tablero</h2>
+      <p>Los indicadores diarios de Depósito, Entrega, Seguridad y Flota de la planilla <b>Reporte KPI</b> en Google Sheets, comparados contra su objetivo. Los datos se leen de la planilla cada vez que se abre el tablero o se toca <b>Actualizar datos</b>. Los domingos no se cuentan.</p>
+      <ul>
+        <li><b>Tablero del día</b>: cumplimiento diario, indicadores por área y semáforo de los últimos 14 días.</li>
+        <li><b>Tabla por período</b>: resumen y detalle día por día entre dos fechas.</li>
+      </ul>
+    </div>
+    <div class="lt-card" id="como-configurar">
+      <h2 class="kp-h2">Cómo elegir indicadores, objetivos y responsables</h2>
+      <p>Todo se define en la pestaña <b>CONFIGURACIÓN</b>, que muestra la hoja <b>Config KPI</b> de la planilla. Tocá <b>Editar en Google Sheets</b>, cambiá lo que necesites y volvé a tocar <b>Actualizar datos</b>.</p>
+    </div>
+  </section>
+
+  <section class="kp-view" id="vista-config" role="tabpanel" hidden>
+    <div class="lt-cfgbar" id="config-acciones">
+      <div class="kp-daytext">
+        <h2 class="kp-h2">Configuración de indicadores</h2>
+        <p class="kp-sub">Definí para cada indicador si se muestra, su objetivo, la condición para cumplirlo y el responsable. Los cambios se hacen en la hoja <b>Config KPI</b> de la planilla Reporte KPI y se ven acá al tocar <b>Actualizar datos</b>.</p>
+      </div>
+      <a class="lt-btn" id="kp-editar-config" href="https://docs.google.com/spreadsheets/d/1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc/edit#gid=96016989" target="_blank" rel="noopener">Editar en Google Sheets ↗</a>
+    </div>
+    <p class="kp-lead" id="config-resumen"><b data-draw="cfgVisibles" data-source="config_kpi">—</b> de <b data-draw="cfgTotal" data-source="config_kpi">—</b> indicadores se muestran en el reporte, <b data-draw="cfgConObj" data-source="config_kpi">—</b> tienen objetivo y <b data-draw="cfgConResp" data-source="config_kpi">—</b> tienen responsable.</p>
+    <ul class="lt-cfghelp" id="config-ayuda">
+      <li><b>Mostrar</b>: si o no.</li>
+      <li><b>Objetivo</b>: los porcentajes van en decimal (0.8 = 80%).</li>
+      <li><b>Condición</b>: mayor o igual, menor o igual o igual.</li>
+      <li><b>Formato</b>: numero, porcentaje o minutos.</li>
+    </ul>
+    <div class="kp-scroll kp-tall"><table class="kp-table lt-cfgtable" data-draw="tablaConfig" data-source="config_kpi" aria-label="Configuración de indicadores"></table></div>
+  </section>
+
+  <section class="kp-view" id="vista-tabla" role="tabpanel" hidden>
+    <div class="kp-periodbar" id="periodo">
+      <label class="kp-field">Desde
+        <input type="date" id="kp-desde" data-draw="desdeInput" aria-label="Desde">
+      </label>
+      <label class="kp-field">Hasta
+        <input type="date" id="kp-hasta" data-draw="hastaInput" aria-label="Hasta">
+      </label>
+      <div class="kp-quick" id="atajos" role="group" aria-label="Períodos rápidos">
+        <button type="button" class="kp-chip" data-rango="7">Últimos 7 días</button>
+        <button type="button" class="kp-chip" data-rango="30">Últimos 30 días</button>
+        <button type="button" class="kp-chip" data-rango="mes">Este mes</button>
+        <button type="button" class="kp-chip" data-rango="mesant">Mes anterior</button>
+        <button type="button" class="kp-chip" data-rango="todo">Todo</button>
+      </div>
+    </div>
+    <p class="kp-lead" id="resumen-periodo">Del <b data-draw="desdeTxt">—</b> al <b data-draw="hastaTxt">—</b>: <b data-draw="perDias" data-source="estado">—</b> días con datos.</p>
+    <div class="kp-alert" id="alertas-periodo" data-draw="fueraPeriodo" data-source="estado"></div>
+
+    <section class="kp-sec" id="tabla-resumen">
+      <h2 class="kp-h2">Resumen del período</h2>
+      <p class="kp-sub">Promedio, mínimo y máximo de cada indicador, y en cuántos días con dato cumplió el objetivo.</p>
+      <div class="kp-scroll"><table class="kp-table" data-draw="tablaResumen" data-source="estado" aria-label="Resumen por indicador"></table></div>
+    </section>
+
+    <section class="kp-sec" id="tabla-diaria">
+      <h2 class="kp-h2">Detalle por día</h2>
+      <p class="kp-sub">Un renglón por día, del más reciente al más antiguo. Verde: en objetivo. Rojo: fuera de objetivo.</p>
+      <div class="kp-scroll kp-tall"><table class="kp-table kp-daily" data-draw="tablaDiaria" data-source="estado" aria-label="Valores diarios por indicador"></table></div>
+    </section>
+  </section>
+  </div>
+</div>
+
+
+</div>
+<script>
+(() => {
+
+const kpLeerHoja = ({ answer }) => {
+  const values = answer && answer.values;
+  if (!Array.isArray(values) || !values.length) throw new Error('La hoja no devolvió filas.');
+  const head = values[0].map((x) => String(x).trim());
+  const num = (s) => {
+    s = String(s === null || s === undefined ? '' : s).trim();
+    if (!s) return null;
+    const t = s.match(/^(-?\d+):(\d{2})(?::(\d{2}))?$/);
+    if (t) return Number(t[1]) * 60 + Number(t[2]) + (t[3] ? Number(t[3]) / 60 : 0);
+    const pct = s.endsWith('%');
+    s = s.replace('%', '').replace(/\s/g, '');
+    if (/^-?\d+,\d+$/.test(s)) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
+    const v = Number(s);
+    return isNaN(v) ? null : pct ? v / 100 : v;
+  };
+  const iso = (s) => { const m = String(s).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : null; };
+  const cols = head.map((x, i) => (i === 0 ? 'fecha' : x));
+  const rows = [];
+  for (const r of values.slice(1)) {
+    const fecha = iso(r[0]);
+    if (!fecha) continue;
+    const o = { fecha };
+    let hay = false;
+    cols.forEach((c, i) => { if (i === 0 || !c) return; const v = num(r[i]); o[c] = v; if (v !== null) hay = true; });
+    if (hay) rows.push(o);
+  }
+  return { columns: cols.filter(Boolean), rows };
+};
+['deposito', 'entrega', 'seguridad', 'flota'].forEach((id) => dash.loader(id, {
+  description: 'Toma la primera fila como encabezados, pasa la fecha dd/mm/aaaa a aaaa-mm-dd, convierte porcentajes a decimal (95% = 0.95) y horas h:mm:ss a minutos, y descarta las fechas sin ningún valor cargado.',
+  fn: kpLeerHoja
+}));
+
+})();
+</script>
+<script>
+(() => {
+
+dash.calc('estado', {
+  inputs: ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi'],
+  title: 'Estado diario de cada KPI',
+  description: 'Une las hojas Deposito, Entrega, Seguridad y Flota por fecha y, para cada indicador marcado para mostrar y cada día de lunes a sábado (los domingos se excluyen): valor, objetivo, si cumple, responsable y cuántos de los últimos 30 registros cumplieron.',
+  fn: (deposito, entrega, seguridad, flota, config) => {
+    const num = (v) => { if (v === null || v === undefined || String(v).trim() === '') return null; const n = Number(String(v).replace(',', '.')); return isNaN(n) ? null : n; };
+    const esDomingo = (fecha) => new Date(fecha + 'T12:00:00Z').getUTCDay() === 0;
+    const porFecha = new Map();
+    for (const hoja of [deposito, entrega, seguridad, flota]) {
+      for (const r of hoja) {
+        if (!r.fecha) continue;
+        porFecha.set(r.fecha, Object.assign(porFecha.get(r.fecha) || { fecha: r.fecha }, r));
+      }
+    }
+    const dias = Array.from(porFecha.values()).filter((d) => !esDomingo(d.fecha)).sort((a, b) => (a.fecha < b.fecha ? -1 : 1));
+    const mostrados = config.filter((c) => String(c.mostrar || '').trim().toLowerCase().startsWith('s'));
+    const filas = [];
+    for (const c of mostrados) {
+      const objetivo = num(c.objetivo);
+      const condicion = String(c.condicion || '').trim().toLowerCase() || 'mayor o igual';
+      const historia = [];
+      for (const d of dias) {
+        const valor = num(d[c.kpi]);
+        let cumple = '';
+        if (valor !== null && objetivo !== null) {
+          const ok = condicion.startsWith('menor') ? valor <= objetivo + 1e-9
+            : condicion === 'igual' ? Math.abs(valor - objetivo) < 1e-9
+            : valor >= objetivo - 1e-9;
+          cumple = ok ? 'si' : 'no';
+          historia.push(cumple);
+        }
+        const ultimos = historia.slice(-30);
+        filas.push({
+          kpi: c.kpi, area: c.area || '', fecha: d.fecha, valor, objetivo, condicion,
+          responsable: String(c.responsable || '').trim(), formato: String(c.formato || 'numero').trim().toLowerCase(),
+          cumple, dias_ok_30: ultimos.filter((x) => x === 'si').length, dias_30: ultimos.length
+        });
+      }
+    }
+    return filas;
+  }
+});
+
+})();
+</script>
+<script>
+(() => {
+
+(() => {
+  const loc = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['$', ''] });
+  const f0 = loc.format(',.0f'), f1 = loc.format(',.1f'), f2 = loc.format(',.2f');
+  const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const KP = {};
+  KP.fmt = (v, formato) => {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    if (formato === 'porcentaje') { const p = v * 100; return (Math.abs(p - Math.round(p)) < 0.05 ? f0(p) : f1(p)) + '%'; }
+    if (formato === 'minutos') { if (v >= 60) { const h = Math.floor(v / 60), m = Math.round(v % 60); return h + ' h ' + String(m).padStart(2, '0') + ' min'; } return f1(v) + ' min'; }
+    const a = Math.abs(v);
+    if (a >= 100) return f0(v);
+    if (Number.isInteger(v)) return f0(v);
+    return f2(v);
+  };
+  KP.sym = (c) => (c.startsWith('menor') ? '≤' : c === 'igual' ? '=' : '≥');
+  KP.enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
+  KP.where = (r) => 'kpi=' + KP.enc(r.kpi) + '&fecha=' + KP.enc(r.fecha);
+  KP.dmy = (iso) => iso ? iso.slice(8, 10) + '/' + iso.slice(5, 7) + '/' + iso.slice(0, 4) : '—';
+  KP.dm = (iso) => iso.slice(8, 10) + '/' + iso.slice(5, 7);
+  KP.diaLargo = (iso) => { const d = new Date(iso + 'T12:00:00Z'); return DIAS[d.getUTCDay()] + ' ' + KP.dmy(iso); };
+  KP.state = () => {
+    const s = dash.data('estado');
+    if (s.status !== 'ok' || !Array.isArray(s.data)) return { status: s.status, rows: [] };
+    const rows = s.data;
+    const fechas = Array.from(new Set(rows.map((r) => r.fecha))).sort();
+    const kpis = Array.from(new Set(rows.map((r) => r.kpi)));
+    const porFecha = d3.rollup(rows, (v) => v.filter((r) => r.valor !== null).length, (r) => r.fecha);
+    const minimo = Math.ceil(kpis.length / 2);
+    let auto = fechas[fechas.length - 1];
+    for (let i = fechas.length - 1; i >= 0; i--) { if ((porFecha.get(fechas[i]) || 0) >= minimo) { auto = fechas[i]; break; } }
+    const p = dash.params();
+    let fecha = p.fecha && /^\d{4}-\d{2}-\d{2}$/.test(p.fecha) ? p.fecha : auto;
+    const fd = new Date(fecha + 'T12:00:00Z');
+    if (fd.getUTCDay() === 0) { fd.setUTCDate(fd.getUTCDate() - 1); fecha = fd.toISOString().slice(0, 10); }
+    const area = p.area || '';
+    const vis = rows.filter((r) => !area || r.area === area);
+    return { status: 'ok', rows, vis, fechas, kpis, fecha, auto, area };
+  };
+  window.KP = KP;
+})();
+
+})();
+</script>
+<script>
+(() => {
+
+(() => {
+  const sel = document.querySelectorAll('#kp-area');
+  sel.forEach((s) => {
+    s.value = dash.params().area || '';
+    s.addEventListener('change', () => dash.setParams({ area: s.value || null }));
+  });
+})();
+
+dash.draw('fechaInput', (el) => {
+  const st = KP.state();
+  if (st.status !== 'ok' || !st.fechas.length) return;
+  el.min = st.fechas[0];
+  el.max = st.fechas[st.fechas.length - 1];
+  if (document.activeElement !== el) el.value = st.fecha;
+  el.onchange = () => { if (el.value && el.validity.valid) dash.setParams({ fecha: el.value === st.auto ? null : el.value }); };
+  el.onblur = () => { el.value = KP.state().fecha || el.value; };
+});
+
+dash.draw('fechaTxt', (el) => {
+  const st = KP.state();
+  el.textContent = st.status === 'ok' ? KP.diaLargo(st.fecha) : '—';
+});
+
+const kpDelDia = () => {
+  const st = KP.state();
+  if (st.status !== 'ok') return null;
+  const hoy = st.vis.filter((r) => r.fecha === st.fecha);
+  const evaluables = hoy.filter((r) => r.cumple);
+  return { st, hoy, evaluables, ok: evaluables.filter((r) => r.cumple === 'si'), mal: evaluables.filter((r) => r.cumple === 'no') };
+};
+
+dash.draw('okCount', (el) => { const d = kpDelDia(); el.textContent = d ? String(d.ok.length) : '—'; });
+dash.draw('totCount', (el) => { const d = kpDelDia(); el.textContent = d ? String(d.evaluables.length) : '—'; });
+
+dash.draw('fuera', (el) => {
+  const d = kpDelDia();
+  el.replaceChildren();
+  if (!d) return;
+  if (!d.mal.length) { el.textContent = d.evaluables.length ? 'Ningún indicador fuera de objetivo ese día.' : 'No hay indicadores con objetivo y dato para ese día.'; return; }
+  el.append('Fuera de objetivo: ');
+  d.mal.forEach((r, i) => {
+    if (i) el.append(' · ');
+    const b = document.createElement('span');
+    b.className = 'kp-bad';
+    b.textContent = r.kpi;
+    el.append(b, ' (' + (r.responsable || 'sin responsable') + ')');
+  });
+});
+
+dash.draw('tendencia', (el) => {
+  const st = KP.state();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', st.status === 'loading');
+  if (st.status !== 'ok') return;
+  const dias = st.fechas.filter((f) => f <= st.fecha).slice(-30);
+  const grp = d3.group(st.vis.filter((r) => r.cumple && dias.includes(r.fecha)), (r) => r.fecha);
+  const pts = dias.map((f) => { const v = grp.get(f) || []; const ok = v.filter((r) => r.cumple === 'si').length; return { fecha: f, n: v.length, ok, pct: v.length ? ok / v.length : null }; });
+  if (!pts.some((p) => p.n)) { const p = document.createElement('p'); p.className = 'kp-empty'; p.textContent = 'No hay indicadores con objetivo en esta área.'; el.append(p); return; }
+  const W = Math.max(280, el.clientWidth || 600), H = 170, m = { t: 10, r: 8, b: 26, l: 40 };
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Porcentaje diario de indicadores en objetivo');
+  const x = d3.scaleBand().domain(dias).range([m.l, W - m.r]).padding(0.2);
+  const y = d3.scaleLinear().domain([0, 1]).range([H - m.b, m.t]);
+  svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat((d) => Math.round(d * 100) + '%').tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+  const step = Math.max(1, Math.ceil(dias.length / Math.floor((W - m.l) / 46)));
+  svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(dias.filter((d, i) => (dias.length - 1 - i) % step === 0)).tickFormat(KP.dm).tickSize(0)).call((g) => g.select('.domain').remove()).selectAll('text').attr('dy', '1em');
+  const tip = document.createElement('div'); tip.className = 'kp-tip'; tip.hidden = true; el.append(tip);
+  svg.append('g').selectAll('rect').data(pts.filter((p) => p.n)).join('rect')
+    .attr('x', (d) => x(d.fecha)).attr('width', x.bandwidth())
+    .attr('y', (d) => y(d.pct)).attr('height', (d) => Math.max(1, y(0) - y(d.pct))).attr('rx', 2)
+    .style('fill', (d) => (d.pct >= 0.8 ? 'var(--color-ok)' : d.pct >= 0.5 ? 'var(--color-warn)' : 'var(--color-bad)'))
+    .style('opacity', (d) => (d.fecha === st.fecha ? 1 : 0.55)).style('cursor', 'pointer')
+    .on('click', (ev, d) => dash.setParams({ fecha: d.fecha === st.auto ? null : d.fecha }))
+    .on('pointermove', (ev, d) => {
+      tip.textContent = KP.diaLargo(d.fecha) + ': ' + d.ok + ' de ' + d.n + ' en objetivo (' + KP.fmt(d.pct, 'porcentaje') + ')';
+      tip.hidden = false;
+      const b = el.getBoundingClientRect();
+      tip.style.left = Math.min(Math.max(ev.clientX - b.left - tip.offsetWidth / 2, 0), b.width - tip.offsetWidth) + 'px';
+      tip.style.top = Math.max(0, ev.clientY - b.top - tip.offsetHeight - 10) + 'px';
+    })
+    .on('pointerleave', () => { tip.hidden = true; });
+});
+
+dash.draw('scorecard', (el) => {
+  const st = KP.state();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', st.status === 'loading');
+  if (st.status !== 'ok') { if (st.status === 'error') { const p = document.createElement('p'); p.className = 'kp-empty'; p.textContent = 'No se pudieron cargar los datos.'; el.append(p); } return; }
+  const porArea = d3.group(st.vis, (r) => r.area, (r) => r.kpi);
+  if (!porArea.size) { const p = document.createElement('p'); p.className = 'kp-empty'; p.textContent = 'No hay indicadores marcados para mostrar en esta área. Elegilos en la Configuración de KPIs.'; el.append(p); return; }
+  const orden = { no: 0, si: 1, '': 2 };
+  for (const [area, kpis] of porArea) {
+    const items = Array.from(kpis, ([kpi, serie]) => {
+      const r = serie.find((x) => x.fecha === st.fecha) || { ...serie[0], valor: null, cumple: '', fecha: null };
+      return { kpi, serie, r };
+    }).sort((a, b) => orden[a.r.cumple] - orden[b.r.cumple]);
+    const panel = document.createElement('section');
+    panel.className = 'kp-apanel';
+    panel.id = 'area-' + area.toLowerCase().normalize('NFD').replace(/[^a-z]+/g, '');
+    const head = document.createElement('div'); head.className = 'kp-ahead';
+    const h3 = document.createElement('h3'); h3.textContent = area;
+    const ev = items.filter((i) => i.r.cumple);
+    const s = document.createElement('span');
+    s.textContent = ev.length ? ev.filter((i) => i.r.cumple === 'si').length + ' de ' + ev.length + ' en objetivo' : 'Sin objetivos con dato';
+    head.append(h3, s); panel.append(head);
+    for (const { kpi, serie, r } of items) {
+      const row = document.createElement('div');
+      row.className = 'kp-row' + (r.cumple === 'si' ? ' is-ok' : r.cumple === 'no' ? ' is-bad' : '');
+      row.id = 'kpi-' + kpi.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const dot = document.createElement('i'); dot.className = 'kp-dot';
+      const nm = document.createElement('div'); nm.className = 'kp-rname';
+      const b = document.createElement('b'); b.textContent = kpi;
+      const resp = document.createElement('span'); resp.textContent = r.responsable ? r.responsable : 'Sin responsable';
+      const obj = document.createElement('span'); obj.textContent = r.objetivo !== null ? 'Objetivo ' + KP.sym(r.condicion) + ' ' + KP.fmt(r.objetivo, r.formato) : 'Sin objetivo';
+      nm.append(b, resp, obj);
+      const vv = document.createElement('div'); vv.className = 'kp-rval';
+      const val = document.createElement('span'); val.className = 'kp-val'; val.textContent = KP.fmt(r.valor, r.formato);
+      if (r.fecha === st.fecha) { val.dataset.source = 'estado'; val.dataset.field = 'valor'; val.dataset.where = KP.where(r); }
+      const sm = document.createElement('small');
+      const hasta = serie.filter((x) => x.fecha <= st.fecha && x.valor !== null);
+      if (r.valor === null) { const u = hasta[hasta.length - 1]; sm.textContent = u ? 'Sin dato · último ' + KP.fmt(u.valor, u.formato) + ' (' + KP.dm(u.fecha) + ')' : 'Sin dato'; }
+      else if (r.cumple) sm.textContent = (r.cumple === 'si' ? 'En objetivo' : 'Fuera de objetivo') + ' · ' + r.dias_ok_30 + '/' + r.dias_30 + ' días';
+      else sm.textContent = 'Sin objetivo';
+      vv.append(val, sm);
+      row.append(dot, nm, vv);
+      const pts = hasta.slice(-30);
+      if (pts.length > 1) row.append(kpSpark(row, pts, r)); else row.append(document.createElement('span'));
+      panel.append(row);
+    }
+    el.append(panel);
+  }
+});
+
+function kpSpark(card, pts, r) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', 'kp-spark');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Evolución de ' + r.kpi + ' en los últimos ' + pts.length + ' registros');
+  const W = 300, H = 52, pad = 4;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const vals = pts.map((p) => p.valor).concat(r.objetivo !== null ? [r.objetivo] : []);
+  let [lo, hi] = d3.extent(vals); if (lo === hi) { lo -= 1; hi += 1; }
+  const x = d3.scaleLinear().domain([0, pts.length - 1]).range([pad, W - pad]);
+  const y = d3.scaleLinear().domain([lo, hi]).range([H - pad, pad]);
+  const s = d3.select(svg);
+  if (r.objetivo !== null) {
+    s.append('line').attr('x1', pad).attr('x2', W - pad).attr('y1', y(r.objetivo)).attr('y2', y(r.objetivo))
+      .style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '4 3').attr('vector-effect', 'non-scaling-stroke');
+  }
+  s.append('path').attr('d', d3.line().x((d, i) => x(i)).y((d) => y(d.valor))(pts))
+    .style('fill', 'none').style('stroke', dash.colors[0]).style('stroke-width', 1.6).attr('vector-effect', 'non-scaling-stroke');
+  const col = (d) => (d.cumple === 'si' ? 'var(--color-ok)' : d.cumple === 'no' ? 'var(--color-bad)' : dash.colors[0]);
+  const last = pts[pts.length - 1];
+  const dot = s.append('circle').attr('cx', x(pts.length - 1)).attr('cy', y(last.valor)).attr('r', 3.2).style('fill', col(last));
+  const hov = s.append('line').attr('y1', 0).attr('y2', H).style('stroke', 'var(--cds-chart-grid)').attr('vector-effect', 'non-scaling-stroke').style('display', 'none');
+  const tip = document.createElement('div'); tip.className = 'kp-tip'; tip.hidden = true; card.append(tip);
+  svg.addEventListener('pointermove', (ev) => {
+    const box = svg.getBoundingClientRect();
+    const i = Math.max(0, Math.min(pts.length - 1, Math.round(x.invert((ev.clientX - box.left) / box.width * W))));
+    const p = pts[i];
+    hov.attr('x1', x(i)).attr('x2', x(i)).style('display', null);
+    dot.attr('cx', x(i)).attr('cy', y(p.valor)).style('fill', col(p));
+    tip.textContent = KP.dm(p.fecha) + ': ' + KP.fmt(p.valor, p.formato) + (p.cumple === 'si' ? ' · en objetivo' : p.cumple === 'no' ? ' · fuera' : '');
+    tip.hidden = false;
+    const cb = card.getBoundingClientRect();
+    const left = Math.min(Math.max(ev.clientX - cb.left - tip.offsetWidth / 2, 4), cb.width - tip.offsetWidth - 4);
+    tip.style.left = left + 'px';
+    tip.style.top = (box.top - cb.top - tip.offsetHeight - 6) + 'px';
+  });
+  svg.addEventListener('pointerleave', () => {
+    tip.hidden = true; hov.style('display', 'none');
+    dot.attr('cx', x(pts.length - 1)).attr('cy', y(last.valor)).style('fill', col(last));
+  });
+  return svg;
+}
+
+dash.draw('matrix', (el) => {
+  const st = KP.state();
+  el.replaceChildren();
+  if (st.status !== 'ok') return;
+  const dias = st.fechas.filter((f) => f <= st.fecha).slice(-14);
+  const conObj = d3.group(st.vis.filter((r) => r.objetivo !== null), (r) => r.kpi);
+  const thead = el.createTHead(); const hr = thead.insertRow();
+  const h0 = document.createElement('th'); h0.className = 'kp-rowh'; h0.textContent = 'Indicador'; hr.append(h0);
+  dias.forEach((f) => { const th = document.createElement('th'); th.textContent = KP.dm(f); if (f === st.fecha) th.className = 'is-sel'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!conObj.size) { const tr = tb.insertRow(); const td = tr.insertCell(); td.colSpan = dias.length + 1; td.textContent = 'No hay indicadores con objetivo en esta área.'; return; }
+  for (const [kpi, serie] of conObj) {
+    const m = new Map(serie.map((r) => [r.fecha, r]));
+    const tr = tb.insertRow();
+    const th = document.createElement('th'); th.className = 'kp-rowh'; th.textContent = kpi; th.title = kpi + (serie[0].responsable ? ' · ' + serie[0].responsable : ''); tr.append(th);
+    dias.forEach((f) => {
+      const r = m.get(f); const td = tr.insertCell();
+      if (!r || r.valor === null) { td.className = 'is-na'; td.textContent = ''; return; }
+      td.className = r.cumple === 'si' ? 'is-ok' : r.cumple === 'no' ? 'is-bad' : 'is-na';
+      td.textContent = KP.fmt(r.valor, r.formato);
+      td.dataset.source = 'estado'; td.dataset.field = 'valor'; td.dataset.where = KP.where(r);
+    });
+  }
+});
+
+})();
+</script>
+<script>
+(() => {
+
+(() => {
+  const ids = ['vista-tablero', 'vista-tabla', 'vista-info', 'vista-config'];
+  const show = (id, link) => {
+    if (!ids.includes(id)) id = ids[0];
+    document.querySelectorAll('.kp-view').forEach((s) => { s.hidden = s.id !== id; });
+    document.querySelectorAll('[data-tab]').forEach((b) => { b.setAttribute('aria-selected', b.dataset.tab === id ? 'true' : 'false'); b.tabIndex = b.dataset.tab === id ? 0 : -1; });
+    if (link) dash.setLink(id);
+  };
+  document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => show(b.dataset.tab, true)));
+  show((location.hash || '').slice(1) || 'vista-tablero', false);
+  window.addEventListener('hashchange', () => show((location.hash || '').slice(1), false));
+})();
+
+window.KP.period = () => {
+  const st = KP.state();
+  if (st.status !== 'ok' || !st.fechas.length) return null;
+  const first = st.fechas[0], last = st.fechas[st.fechas.length - 1];
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const back = (n) => { const d = new Date(last + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - (n - 1)); return iso(d); };
+  const p = dash.params();
+  const ok = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+  let desde = ok(p.desde) ? p.desde : back(30);
+  let hasta = ok(p.hasta) ? p.hasta : last;
+  if (desde > hasta) [desde, hasta] = [hasta, desde];
+  const dias = st.fechas.filter((f) => f >= desde && f <= hasta);
+  const rows = st.vis.filter((r) => r.fecha >= desde && r.fecha <= hasta);
+  return { st, first, last, desde, hasta, dias, rows, back, iso };
+};
+
+(() => {
+  document.querySelectorAll('[data-rango]').forEach((b) => b.addEventListener('click', () => {
+    const P = KP.period(); if (!P) return;
+    const r = b.dataset.rango; const L = new Date(P.last + 'T12:00:00Z');
+    let desde, hasta = P.last;
+    if (r === 'todo') desde = P.first;
+    else if (r === 'mes') desde = P.last.slice(0, 8) + '01';
+    else if (r === 'mesant') { const a = new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth() - 1, 1)); const z = new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth(), 0)); desde = P.iso(a); hasta = P.iso(z); }
+    else desde = P.back(Number(r));
+    dash.setParams({ desde, hasta });
+  }));
+})();
+
+dash.onData(() => {
+  const P = KP.period();
+  document.querySelectorAll('[data-rango]').forEach((b) => {
+    let on = false;
+    if (P) {
+      const r = b.dataset.rango; const L = new Date(P.last + 'T12:00:00Z');
+      if (r === 'todo') on = P.desde === P.first && P.hasta === P.last;
+      else if (r === 'mes') on = P.desde === P.last.slice(0, 8) + '01' && P.hasta === P.last;
+      else if (r === 'mesant') on = P.desde === P.iso(new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth() - 1, 1))) && P.hasta === P.iso(new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth(), 0)));
+      else on = P.desde === P.back(Number(r)) && P.hasta === P.last;
+    }
+    b.classList.toggle('is-on', on);
+  });
+});
+
+const kpDateDraw = (key) => (el) => {
+  const P = KP.period(); if (!P) return;
+  el.min = P.first; el.max = P.last;
+  if (document.activeElement !== el) el.value = P[key];
+  el.onchange = () => { if (el.value && el.validity.valid) dash.setParams({ [key]: el.value }); };
+  el.onblur = () => { const Q = KP.period(); if (Q) el.value = Q[key]; };
+};
+dash.draw('desdeInput', kpDateDraw('desde'));
+dash.draw('hastaInput', kpDateDraw('hasta'));
+dash.draw('desdeTxt', (el) => { const P = KP.period(); el.textContent = P ? KP.dmy(P.desde) : '—'; });
+dash.draw('hastaTxt', (el) => { const P = KP.period(); el.textContent = P ? KP.dmy(P.hasta) : '—'; });
+dash.draw('perDias', (el) => { const P = KP.period(); el.textContent = P ? String(P.dias.length) : '—'; });
+
+dash.draw('tablaResumen', (el) => {
+  const P = KP.period();
+  el.replaceChildren();
+  if (!P) return;
+  const cols = [['Indicador', 'kp-l'], ['Área', 'kp-l'], ['Responsable', 'kp-l'], ['Objetivo', ''], ['Promedio', ''], ['Mínimo', ''], ['Máximo', ''], ['Días con dato', ''], ['Días en objetivo', ''], ['Cumplimiento', '']];
+  const hr = el.createTHead().insertRow();
+  cols.forEach(([t, c]) => { const th = document.createElement('th'); th.textContent = t; if (c) th.className = c; hr.append(th); });
+  const tb = el.createTBody();
+  const grupos = d3.group(P.rows, (r) => r.kpi);
+  if (!grupos.size) { const td = tb.insertRow().insertCell(); td.colSpan = cols.length; td.className = 'kp-l kp-muted'; td.textContent = 'No hay indicadores para mostrar en este período o área.'; return; }
+  for (const [kpi, serie] of grupos) {
+    const r0 = serie[0];
+    const vals = serie.filter((r) => r.valor !== null);
+    const ev = serie.filter((r) => r.cumple);
+    const okn = ev.filter((r) => r.cumple === 'si').length;
+    const tr = tb.insertRow();
+    const th = document.createElement('th'); th.textContent = kpi; tr.append(th);
+    const cell = (txt, cls) => { const td = tr.insertCell(); td.textContent = txt; if (cls) td.className = cls; return td; };
+    cell(r0.area, 'kp-l kp-muted');
+    cell(r0.responsable || 'Sin asignar', 'kp-l' + (r0.responsable ? '' : ' kp-muted'));
+    cell(r0.objetivo !== null ? KP.sym(r0.condicion) + ' ' + KP.fmt(r0.objetivo, r0.formato) : '—', r0.objetivo !== null ? '' : 'kp-muted');
+    cell(vals.length ? KP.fmt(d3.mean(vals, (r) => r.valor), r0.formato) : '—');
+    cell(vals.length ? KP.fmt(d3.min(vals, (r) => r.valor), r0.formato) : '—');
+    cell(vals.length ? KP.fmt(d3.max(vals, (r) => r.valor), r0.formato) : '—');
+    cell(String(vals.length));
+    cell(ev.length ? String(okn) : '—', ev.length ? '' : 'kp-muted');
+    const td = tr.insertCell();
+    if (!ev.length) { td.textContent = '—'; td.className = 'kp-muted'; continue; }
+    const pct = okn / ev.length;
+    const wrap = document.createElement('span'); wrap.className = 'kp-bar';
+    const i = document.createElement('i'); const b = document.createElement('b');
+    b.style.width = Math.round(pct * 100) + '%';
+    b.style.setProperty('--kp-barc', pct >= 0.8 ? 'var(--color-ok)' : pct >= 0.5 ? 'var(--color-warn)' : 'var(--color-bad)');
+    i.append(b);
+    const t = document.createElement('span'); t.textContent = KP.fmt(pct, 'porcentaje');
+    wrap.append(i, t); td.append(wrap);
+  }
+});
+
+dash.draw('tablaDiaria', (el) => {
+  const P = KP.period();
+  el.replaceChildren();
+  if (!P) return;
+  const kpis = Array.from(d3.group(P.st.vis, (r) => r.kpi).keys());
+  const idx = new Map(P.rows.map((r) => [r.kpi + '|' + r.fecha, r]));
+  const hr = el.createTHead().insertRow();
+  const h0 = document.createElement('th'); h0.textContent = 'Fecha'; hr.append(h0);
+  const meta = new Map(P.st.vis.map((r) => [r.kpi, r]));
+  kpis.forEach((k) => {
+    const r = meta.get(k);
+    const th = document.createElement('th');
+    const n = document.createElement('span'); n.className = 'kp-hname'; n.textContent = k;
+    const o = document.createElement('span'); o.className = 'kp-hobj';
+    o.textContent = r && r.objetivo !== null ? 'Obj. ' + KP.sym(r.condicion) + ' ' + KP.fmt(r.objetivo, r.formato) : 'Sin objetivo';
+    const rp = document.createElement('span'); rp.className = 'kp-hobj kp-hresp';
+    rp.textContent = r && r.responsable ? r.responsable : 'Sin responsable';
+    th.append(n, o, rp);
+    hr.append(th);
+  });
+  const tb = el.createTBody();
+  if (!P.dias.length || !kpis.length) { const td = tb.insertRow().insertCell(); td.colSpan = kpis.length + 1; td.className = 'kp-l kp-muted'; td.textContent = 'No hay datos en este período.'; return; }
+  P.dias.slice().reverse().forEach((f) => {
+    const tr = tb.insertRow();
+    const th = document.createElement('th'); th.textContent = KP.diaLargo(f); tr.append(th);
+    kpis.forEach((k) => {
+      const r = idx.get(k + '|' + f); const td = tr.insertCell();
+      if (!r || r.valor === null) { td.textContent = '—'; td.className = 'kp-muted'; return; }
+      td.textContent = KP.fmt(r.valor, r.formato);
+      if (r.cumple) td.className = r.cumple === 'si' ? 'is-ok' : 'is-bad';
+      td.dataset.source = 'estado'; td.dataset.field = 'valor'; td.dataset.where = KP.where(r);
+    });
+  });
+});
+
+document.querySelectorAll('#kp-actualizar').forEach((b) => b.addEventListener('click', () => {
+  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi'].forEach((id) => dash.refresh(id));
+}));
+dash.onData(() => {
+  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi'];
+  const busy = ids.some((id) => { const d = dash.data(id); return d.status === 'loading' || d.refreshing; });
+  document.querySelectorAll('#kp-actualizar').forEach((b) => { b.disabled = busy; b.classList.toggle('is-busy', busy); });
+  const caida = ids.some((id) => ['error', 'connect', 'declined'].includes(dash.data(id).status));
+  document.querySelectorAll('#kp-conn-ok').forEach((e) => { e.hidden = caida; });
+  document.querySelectorAll('#kp-conn-bad').forEach((e) => { e.hidden = !caida; });
+});
+dash.draw('ultimoDia', (el) => { const st = KP.state(); el.textContent = st.status === 'ok' && st.fechas.length ? KP.diaLargo(st.fechas[st.fechas.length - 1]) : '—'; });
+
+dash.loader('config_kpi', {
+  description: 'Lee la hoja Config KPI: una fila por indicador con KPI, Área, Mostrar, Objetivo, Condición, Responsable y Formato. Convierte el objetivo a número (80% = 0.8) y descarta filas sin nombre de KPI.',
+  fn: ({ answer }) => {
+    const values = answer && answer.values;
+    if (!Array.isArray(values) || !values.length) throw new Error('La hoja Config KPI no devolvió filas.');
+    const norm = (s) => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const claves = { kpi: 'kpi', area: 'area', mostrar: 'mostrar', objetivo: 'objetivo', condicion: 'condicion', responsable: 'responsable', formato: 'formato' };
+    const head = values[0].map((x) => claves[norm(x)] || null);
+    const num = (s) => {
+      s = String(s === null || s === undefined ? '' : s).trim();
+      if (!s) return null;
+      const pct = s.endsWith('%');
+      s = s.replace('%', '').replace(/\s/g, '');
+      if (/^-?\d+,\d+$/.test(s)) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
+      const v = Number(s);
+      return isNaN(v) ? null : pct ? v / 100 : v;
+    };
+    const rows = [];
+    for (const r of values.slice(1)) {
+      const o = { kpi: '', area: '', mostrar: '', objetivo: null, condicion: '', responsable: '', formato: '' };
+      head.forEach((k, i) => { if (!k) return; const v = r[i] === undefined ? '' : String(r[i]).trim(); o[k] = k === 'objetivo' ? num(v) : v; });
+      if (o.kpi) rows.push(o);
+    }
+    return { columns: ['kpi', 'area', 'mostrar', 'objetivo', 'condicion', 'responsable', 'formato'], rows };
+  }
+});
+
+const kpCfg = () => { const d = dash.data('config_kpi'); return d.status === 'ok' && Array.isArray(d.data) ? d.data : null; };
+const kpVisible = (c) => String(c.mostrar || '').trim().toLowerCase().startsWith('s');
+dash.draw('cfgTotal', (el) => { const c = kpCfg(); el.textContent = c ? String(c.length) : '—'; });
+dash.draw('cfgVisibles', (el) => { const c = kpCfg(); el.textContent = c ? String(c.filter(kpVisible).length) : '—'; });
+dash.draw('cfgConObj', (el) => { const c = kpCfg(); el.textContent = c ? String(c.filter((x) => x.objetivo !== null && x.objetivo !== '').length) : '—'; });
+dash.draw('cfgConResp', (el) => { const c = kpCfg(); el.textContent = c ? String(c.filter((x) => String(x.responsable || '').trim()).length) : '—'; });
+dash.draw('tablaConfig', (el) => {
+  const c = kpCfg();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', dash.data('config_kpi').status === 'loading');
+  if (!c) return;
+  const area = dash.params().area || '';
+  const filas = c.filter((x) => !area || x.area === area);
+  const hr = el.createTHead().insertRow();
+  [['KPI', 'kpi'], ['Área', 'area'], ['Mostrar', 'mostrar'], ['Objetivo', null], ['Condición', 'condicion'], ['Responsable', 'responsable'], ['Formato', 'formato']].forEach(([t, f]) => {
+    const th = document.createElement('th'); th.textContent = t; hr.append(th);
+  });
+  const tb = el.createTBody();
+  if (!filas.length) { const td = tb.insertRow().insertCell(); td.colSpan = 7; td.className = 'kp-l kp-muted'; td.textContent = 'No hay indicadores en esta área.'; return; }
+  for (const x of filas) {
+    const tr = tb.insertRow();
+    tr.className = kpVisible(x) ? '' : 'is-off';
+    const th = document.createElement('th'); th.textContent = x.kpi; tr.append(th);
+    const cell = (txt, cls) => { const td = tr.insertCell(); td.className = 'kp-l' + (cls ? ' ' + cls : ''); td.textContent = txt; return td; };
+    cell(x.area || '—');
+    const m = tr.insertCell(); m.className = 'kp-l'; const p = document.createElement('span'); p.className = 'lt-pill ' + (kpVisible(x) ? 'si' : 'no'); p.textContent = kpVisible(x) ? 'Sí' : 'No'; m.append(p);
+    const cond = String(x.condicion || '').trim().toLowerCase() || 'mayor o igual';
+    cell(x.objetivo !== null && x.objetivo !== '' ? KP.sym(cond) + ' ' + KP.fmt(Number(x.objetivo), String(x.formato || 'numero').toLowerCase()) : '—', x.objetivo === null || x.objetivo === '' ? 'kp-muted' : '');
+    cell(x.objetivo !== null && x.objetivo !== '' ? cond : '—', x.objetivo === null || x.objetivo === '' ? 'kp-muted' : '');
+    cell(x.responsable || 'Sin asignar', x.responsable ? '' : 'kp-muted');
+    cell(x.formato || 'numero', 'kp-muted');
+  }
+});
+
+dash.draw('fueraPeriodo', (el) => {
+  const P = KP.period();
+  el.replaceChildren();
+  if (!P) return;
+  const grupos = d3.group(P.rows.filter((r) => r.cumple), (r) => r.kpi);
+  const mal = [];
+  for (const [kpi, serie] of grupos) {
+    const n = serie.filter((r) => r.cumple === 'no').length;
+    if (n) mal.push({ kpi, n, total: serie.length, responsable: serie[0].responsable });
+  }
+  if (!grupos.size) { el.textContent = 'No hay indicadores con objetivo y dato en este período.'; return; }
+  if (!mal.length) { el.textContent = 'Ningún indicador estuvo fuera de objetivo en el período.'; return; }
+  mal.sort((a, b) => b.n / b.total - a.n / a.total);
+  const t = document.createElement('span'); t.className = 'kp-alert-title'; t.textContent = 'Fuera de objetivo en el período:';
+  const ul = document.createElement('ul'); ul.className = 'kp-alert-list';
+  mal.forEach((m) => {
+    const li = document.createElement('li');
+    const b = document.createElement('span');
+    b.className = 'kp-bad';
+    b.textContent = m.kpi;
+    li.append(b, ' (' + (m.responsable || 'sin responsable') + ', ' + m.n + ' de ' + m.total + ' días)');
+    ul.append(li);
+  });
+  el.append(t, ul);
+});
+
+})();
+</script>
+<script>dash.start();</script>
+</body>
+</html>
