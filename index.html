@@ -111,6 +111,15 @@ img { max-width: 100%; }
 .pl-pill.pl-cerrado { background: #dff3e8; color: #11663a; }
 .pl-table tr.pl-cerrado td, .pl-table tr.pl-cerrado th { color: var(--color-fg-muted); }
 #matinal-periodos .kp-chip[aria-pressed="true"] { background: #1a1d22; color: #fff; border-color: #1a1d22; }
+.pl-table td.pl-edit { vertical-align: top; }
+.pl-in { font: inherit; font-size: 12.5px; border: 1px solid #cfd4dc; border-radius: 6px; padding: 5px 7px; background: #fff; color: var(--color-fg); }
+.pl-table textarea.pl-in { width: 100%; min-width: 200px; resize: vertical; }
+.pl-table .pl-pill.pl-vencido { margin-left: 6px; }
+.pl-guardar { border: 0; cursor: pointer; font-family: inherit; padding: 6px 12px; font-size: 12px; background: #2a2e35; }
+.pl-guardar.is-dirty { background: #f07f1d; }
+.pl-table .pl-msg { display: block; margin-top: 4px; font-size: 11px; color: var(--color-fg-muted); }
+.pl-table .pl-msg.is-ok { color: var(--color-ok); font-weight: 600; }
+.pl-table .pl-msg.is-bad { color: var(--color-bad); font-weight: 600; white-space: normal; max-width: 160px; }
 @media (max-width: 640px) { .lt-hright { margin-left: 0; } .lt-brand { padding: 12px 16px; } .lt-nav { padding: 6px 12px; } }
 .kp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
 .kp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -217,9 +226,10 @@ img { max-width: 100%; }
 
 .pl-form { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid #f07f1d; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
 .pl-form-title { margin: 0; font-size: var(--cds-font-size-heading); font-weight: 700; }
-.pl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.pl-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .pl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .pl-grid .pl-wide { grid-column: span 2; }
-@media (max-width: 520px) { .pl-grid .pl-wide { grid-column: auto; } }
+@media (max-width: 520px) { .pl-grid { grid-template-columns: 1fr; } .pl-grid .pl-wide { grid-column: auto; } }
 .pl-form input, .pl-form select, .pl-form textarea { font: inherit; font-size: 13px; text-transform: none; letter-spacing: 0; border: 1px solid #cfd4dc; border-radius: 6px; padding: 7px 9px; background: #fff; color: var(--color-fg); width: 100%; }
 .pl-form textarea { resize: vertical; }
 .pl-form input:focus, .pl-form select:focus, .pl-form textarea:focus { outline: 2px solid #f07f1d; outline-offset: 1px; }
@@ -1455,20 +1465,26 @@ const kpPlanes = () => {
 dash.draw('plAbiertos', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.todos.filter((p) => kpPlanEstado(p) !== 'cerrado').length) : '—'; });
 dash.draw('plVencidos', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.todos.filter((p) => kpPlanEstado(p) === 'vencido').length) : '—'; });
 dash.draw('plCerrados', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.lista.filter((p) => kpPlanEstado(p) === 'cerrado').length) : '—'; });
+// Borradores de edición por fila, para no perder lo escrito si la tabla se redibuja.
+const kpBorradores = new Map();
 dash.draw('planesTabla', (el) => {
   const P = kpPlanes();
+  // window.KP_EDITAR solo existe en la versión web: ahí los planes se actualizan desde la tabla.
+  const editar = typeof window.KP_EDITAR === 'function';
   el.replaceChildren();
   el.classList.toggle('dash-skeleton', dash.data('planes').status === 'loading');
   if (!P) return;
   const hr = el.createTHead().insertRow();
-  ['Reunión', 'Indicador', 'Desvío detectado', 'Acción', 'Responsable', 'Compromiso', 'Estado', 'Seguimiento'].forEach((t) => { const th = document.createElement('th'); th.textContent = t; hr.append(th); });
+  const cab = ['Reunión', 'Indicador', 'Desvío detectado', 'Acción', 'Responsable', 'Compromiso', 'Estado'].concat(editar ? ['Fecha cierre', 'Seguimiento', ''] : ['Seguimiento']);
+  cab.forEach((t) => { const th = document.createElement('th'); th.textContent = t; hr.append(th); });
   const tb = el.createTBody();
   if (!P.lista.length) {
-    const td = tb.insertRow().insertCell(); td.colSpan = 8; td.className = 'kp-l kp-muted';
-    td.textContent = P.todos.length ? 'No hay planes abiertos ni registrados en este período.' : 'Todavía no hay planes registrados. Usá "Registrar plan en Google Sheets" para cargar el primero.';
+    const td = tb.insertRow().insertCell(); td.colSpan = cab.length; td.className = 'kp-l kp-muted';
+    td.textContent = P.todos.length ? 'No hay planes abiertos ni registrados en este período.' : 'Todavía no hay planes registrados.';
     return;
   }
   const lbl = { vencido: 'Vencido', pendiente: 'Pendiente', curso: 'En curso', cerrado: 'Cerrado' };
+  const estadoHoja = (p) => { const e = String(p.estado || '').trim().toLowerCase(); return e.startsWith('cerr') ? 'Cerrado' : e.startsWith('en curso') ? 'En curso' : 'Pendiente'; };
   for (const p of P.lista) {
     const est = kpPlanEstado(p);
     const tr = tb.insertRow(); tr.dataset.key = p.fila; tr.className = 'pl-' + est;
@@ -1479,11 +1495,59 @@ dash.draw('planesTabla', (el) => {
     cell(p.accion, 'kp-wrap');
     cell(p.responsable, p.responsable ? '' : 'kp-muted');
     cell(/^\d{4}-\d{2}-\d{2}$/.test(p.compromiso) ? KP.dmy(p.compromiso) : p.compromiso, 'kp-nowrap');
-    const td = tr.insertCell(); td.className = 'kp-l';
-    const pill = document.createElement('span'); pill.className = 'pl-pill pl-' + est;
-    pill.textContent = lbl[est] + (est === 'cerrado' && /^\d{4}-\d{2}-\d{2}$/.test(p.cierre) ? ' ' + KP.dm(p.cierre) : '');
-    td.append(pill);
-    cell(p.seguimiento, 'kp-wrap' + (p.seguimiento ? '' : ' kp-muted'));
+    if (!editar) {
+      const td = tr.insertCell(); td.className = 'kp-l';
+      const pill = document.createElement('span'); pill.className = 'pl-pill pl-' + est;
+      pill.textContent = lbl[est] + (est === 'cerrado' && /^\d{4}-\d{2}-\d{2}$/.test(p.cierre) ? ' ' + KP.dm(p.cierre) : '');
+      td.append(pill);
+      cell(p.seguimiento, 'kp-wrap' + (p.seguimiento ? '' : ' kp-muted'));
+      continue;
+    }
+    const clave = p.fila + '|' + p.indicador + '|' + p.accion;
+    const b = kpBorradores.get(clave) || { estado: estadoHoja(p), cierre: /^\d{4}-\d{2}-\d{2}$/.test(p.cierre) ? p.cierre : '', seguimiento: p.seguimiento || '' };
+    const guardarBorrador = () => kpBorradores.set(clave, b);
+    // Estado
+    const tdE = tr.insertCell(); tdE.className = 'kp-l pl-edit';
+    const sel = document.createElement('select'); sel.className = 'pl-in'; sel.setAttribute('aria-label', 'Estado');
+    ['Pendiente', 'En curso', 'Cerrado'].forEach((o) => sel.append(new Option(o, o)));
+    sel.value = b.estado;
+    tdE.append(sel);
+    if (est === 'vencido') { const v = document.createElement('span'); v.className = 'pl-pill pl-vencido'; v.textContent = 'Vencido'; tdE.append(v); }
+    // Fecha cierre
+    const tdC = tr.insertCell(); tdC.className = 'kp-l pl-edit';
+    const fc = document.createElement('input'); fc.type = 'date'; fc.className = 'pl-in'; fc.value = b.cierre; fc.setAttribute('aria-label', 'Fecha cierre');
+    tdC.append(fc);
+    // Seguimiento
+    const tdS = tr.insertCell(); tdS.className = 'kp-l pl-edit kp-wrap';
+    const ta = document.createElement('textarea'); ta.className = 'pl-in'; ta.rows = 2; ta.maxLength = 1000; ta.value = b.seguimiento; ta.placeholder = 'Avance, comentarios…'; ta.setAttribute('aria-label', 'Seguimiento');
+    tdS.append(ta);
+    // Guardar
+    const tdG = tr.insertCell(); tdG.className = 'kp-l pl-edit';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'lt-btn pl-guardar'; btn.textContent = 'Guardar';
+    const msg = document.createElement('span'); msg.className = 'pl-msg';
+    tdG.append(btn, msg);
+    const marcar = () => { guardarBorrador(); btn.classList.add('is-dirty'); };
+    sel.onchange = () => {
+      b.estado = sel.value;
+      if (sel.value === 'Cerrado' && !fc.value) { const d = new Date(); fc.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); b.cierre = fc.value; }
+      marcar();
+    };
+    fc.onchange = () => { b.cierre = fc.value; marcar(); };
+    ta.oninput = () => { b.seguimiento = ta.value; marcar(); };
+    if (kpBorradores.has(clave)) btn.classList.add('is-dirty');
+    btn.onclick = async () => {
+      if (b.estado === 'Cerrado' && !b.cierre) { msg.textContent = 'Poné la fecha de cierre.'; msg.className = 'pl-msg is-bad'; return; }
+      btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'pl-msg';
+      try {
+        await window.KP_EDITAR({ fila: p.fila, fecha: p.fecha, indicador: p.indicador, accion: p.accion, estado: b.estado, cierre: b.cierre, seguimiento: b.seguimiento.trim() });
+        kpBorradores.delete(clave);
+        btn.classList.remove('is-dirty');
+        msg.textContent = 'Guardado'; msg.className = 'pl-msg is-ok';
+        setTimeout(() => dash.refresh('planes'), 1500);
+      } catch (e) {
+        msg.textContent = 'No se pudo guardar: ' + (e.message || e); msg.className = 'pl-msg is-bad';
+      } finally { btn.disabled = false; }
+    };
   }
 });
 
@@ -1494,6 +1558,14 @@ dash.draw('planesTabla', (el) => {
 // Pegá acá la URL de la aplicación web de Apps Script (termina en /exec). Ver README.
 const PLANES_URL = 'https://script.google.com/macros/s/AKfycbxfPb-r5WRQFlxP-NuFIs8WRq7ZtzL-XshzuZJIqXm_eIoGHQm0j5mIKsnvuoFf0qA/exec';
 const PLANES_CLAVE = '2f767f70e243d36a';
+// Actualiza estado, fecha de cierre y seguimiento de un plan (lo usa la tabla de planes).
+window.KP_EDITAR = async (datos) => {
+  if (!PLANES_URL) throw new Error('falta configurar PLANES_URL');
+  const r = await fetch(PLANES_URL, { method: 'POST', body: JSON.stringify(Object.assign({ clave: PLANES_CLAVE, tipo: 'actualizar' }, datos)) });
+  const res = await r.json();
+  if (!res.ok) throw new Error(res.error || 'error desconocido');
+  return res;
+};
 (() => {
   const f = document.getElementById('pl-form');
   if (!f) return;
