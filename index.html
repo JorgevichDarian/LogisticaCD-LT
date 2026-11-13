@@ -77,6 +77,9 @@ img { max-width: 100%; }
 .lt-cfgbar { display: flex; gap: var(--cds-gap-lg); align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
 .lt-btn { display: inline-block; background: #f07f1d; color: #fff; text-decoration: none; border-radius: 6px; padding: 9px 16px; font-weight: 600; font-size: 13px; white-space: nowrap; }
 .lt-btn:hover { background: #d96d10; }
+.pl-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.lt-btn-sec { background: #2a2e35; }
+.lt-btn-sec:hover { background: #3a3f48; }
 .lt-btn:focus-visible { outline: 2px solid #1a1d22; outline-offset: 2px; }
 .lt-cfghelp { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .lt-cfgtable td.kp-l, .lt-cfgtable th, .lt-cfgtable thead th { text-align: left; }
@@ -87,6 +90,27 @@ img { max-width: 100%; }
 .kp-dayblock { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
 .kp-alert-title { display: block; margin-bottom: 4px; }
 .kp-alert-list { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 2px; }
+.mt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--cds-gap-md); min-height: 220px; }
+.mt-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; border-top: 3px solid #f07f1d; }
+.mt-card h3 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: 700; }
+.mt-card > .kp-sub { margin-top: -6px; }
+.mt-met { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: color-mix(in srgb, var(--kp-state, var(--color-fg)) 6%, transparent); border-left: 4px solid var(--kp-state, var(--color-border-line)); }
+.mt-met.is-ok { --kp-state: var(--color-ok); } .mt-met.is-bad { --kp-state: var(--color-bad); }
+.mt-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.mt-lab { font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--color-fg-muted); }
+.mt-val { font-size: 1.9rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.mt-meta { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.mt-met .kp-spark { height: 40px; margin-top: 4px; }
+.pl-table th, .pl-table td, .pl-table thead th { text-align: left; vertical-align: top; }
+.pl-table td.kp-wrap { white-space: normal; min-width: 200px; max-width: 340px; }
+.pl-table td.kp-nowrap { white-space: nowrap; }
+.pl-pill { display: inline-block; padding: 2px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; white-space: nowrap; }
+.pl-pill.pl-vencido { background: #fbe1e1; color: #9b1c1c; }
+.pl-pill.pl-pendiente { background: #fff3d0; color: #7a5a00; }
+.pl-pill.pl-curso { background: #e3edfb; color: #1d4e89; }
+.pl-pill.pl-cerrado { background: #dff3e8; color: #11663a; }
+.pl-table tr.pl-cerrado td, .pl-table tr.pl-cerrado th { color: var(--color-fg-muted); }
+#matinal-periodos .kp-chip[aria-pressed="true"] { background: #1a1d22; color: #fff; border-color: #1a1d22; }
 @media (max-width: 640px) { .lt-hright { margin-left: 0; } .lt-brand { padding: 12px 16px; } .lt-nav { padding: 6px 12px; } }
 .kp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
 .kp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -191,20 +215,39 @@ img { max-width: 100%; }
 @media (max-width: 520px) { .kp-row { grid-template-columns: 6px minmax(0, 1fr) auto; } .kp-row .kp-spark { grid-column: 2 / -1; } }
 [data-dash-source-state=refreshing] { opacity: .5; }
 
+.pl-form { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid #f07f1d; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+.pl-form-title { margin: 0; font-size: var(--cds-font-size-heading); font-weight: 700; }
+.pl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.pl-grid .pl-wide { grid-column: span 2; }
+@media (max-width: 520px) { .pl-grid .pl-wide { grid-column: auto; } }
+.pl-form input, .pl-form select, .pl-form textarea { font: inherit; font-size: 13px; text-transform: none; letter-spacing: 0; border: 1px solid #cfd4dc; border-radius: 6px; padding: 7px 9px; background: #fff; color: var(--color-fg); width: 100%; }
+.pl-form textarea { resize: vertical; }
+.pl-form input:focus, .pl-form select:focus, .pl-form textarea:focus { outline: 2px solid #f07f1d; outline-offset: 1px; }
+.pl-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pl-actions .lt-btn { border: 0; cursor: pointer; font-family: inherit; }
+.pl-actions .lt-btn:disabled { opacity: .6; cursor: progress; }
+.pl-msg { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.pl-msg.is-ok { color: var(--color-ok); font-weight: 600; }
+.pl-msg.is-bad { color: var(--color-bad); font-weight: 600; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 /* Motor mínimo del tablero: lee la planilla de Google Sheets publicada y redibuja la página. */
 (function () {
   // ===== Configuración =====
-  // ID de la planilla Reporte KPI y nombre de cada hoja que se lee.
-  const SHEET_ID = '1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc';
+  // Planilla y hoja de donde se lee cada fuente de datos.
+  const REPORTE_KPI = '1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc';
+  const TIEMPOS_ENTREGA = '1pyDSADNMMBXygjJgBY5GnE-yda3tTeYlG0rPMmZ7-Fw';
+  const ROTURA_DISTRIBUCION = '15pSk1BJE_LY_P-F-Tt-xmFcLiHNf7ASGE6GRbwtbyQ8';
   const HOJAS = {
-    deposito: 'Deposito',
-    entrega: 'Entrega',
-    seguridad: 'Seguridad',
-    flota: 'Flota',
-    config_kpi: 'Config KPI'
+    deposito: { planilla: REPORTE_KPI, hoja: 'Deposito' },
+    entrega: { planilla: REPORTE_KPI, hoja: 'Entrega' },
+    seguridad: { planilla: REPORTE_KPI, hoja: 'Seguridad' },
+    flota: { planilla: REPORTE_KPI, hoja: 'Flota' },
+    config_kpi: { planilla: REPORTE_KPI, hoja: 'Config KPI' },
+    tml: { planilla: TIEMPOS_ENTREGA, hoja: 'Resumen Matinal' },
+    rotura: { planilla: ROTURA_DISTRIBUCION, hoja: 'Resumen Matinal' },
+    planes: { planilla: REPORTE_KPI, hoja: 'Planes de Acción' }
   };
   // Minutos que se reutiliza una lectura antes de volver a pedirla a la planilla (el botón "Actualizar datos" la fuerza).
   const MINUTOS_CACHE = 60;
@@ -217,8 +260,8 @@ img { max-width: 100%; }
   let params = {};
   let pendiente = false;
 
-  const urlHoja = (nombre) =>
-    'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(nombre);
+  const urlHoja = (f) =>
+    'https://docs.google.com/spreadsheets/d/' + f.planilla + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(f.hoja);
 
   function parseCSV(t) {
     const rows = []; let row = [], f = '', q = false;
@@ -266,7 +309,7 @@ img { max-width: 100%; }
         const r = await fetch(urlHoja(HOJAS[id]) + '&_=' + Date.now());
         if (!r.ok) throw new Error('La planilla respondió ' + r.status);
         const txt = await r.text();
-        if (/^\s*</.test(txt)) throw new Error('La planilla no es pública: compartila como "Cualquier persona con el vínculo".');
+        if (/^\s*</.test(txt)) throw new Error('La planilla de ' + id + ' no es pública: compartila como "Cualquier persona con el vínculo".');
         values = parseCSV(txt);
         cacheSet(id, values);
       }
@@ -360,7 +403,7 @@ img { max-width: 100%; }
   </header>
   <nav class="lt-nav" id="navegacion" role="tablist" aria-label="Vistas">
     <button type="button" role="tab" data-tab="vista-info" aria-selected="false">INFO</button>
-    <div class="lt-grp"><span>KPI</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button></div>
+    <div class="lt-grp"><span>KPI</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button><button type="button" role="tab" data-tab="vista-matinal" aria-selected="false">Matinal Entrega</button></div>
     <button type="button" role="tab" data-tab="vista-config" aria-selected="false">CONFIGURACIÓN</button>
   </nav>
 
@@ -410,6 +453,73 @@ img { max-width: 100%; }
     <div class="kp-scroll"><table class="kp-matrix" data-draw="matrix" data-source="estado" aria-label="Semáforo diario por indicador"></table></div>
   </section>
 
+  </section>
+
+  <section class="kp-view" id="vista-matinal" role="tabpanel" hidden>
+    <div class="kp-dayblock" id="matinal-filtros">
+      <div class="kp-quick" id="matinal-periodos" role="group" aria-label="Período de la matinal">
+        <button type="button" class="kp-chip" data-mat="dia">Fecha específica</button>
+        <button type="button" class="kp-chip" data-mat="mes">Mes actual</button>
+        <button type="button" class="kp-chip" data-mat="mesant">Mes pasado</button>
+        <button type="button" class="kp-chip" data-mat="rango">Rango de fechas</button>
+      </div>
+      <div class="kp-periodbar">
+        <label class="kp-field" id="mt-campo-dia">Día
+          <input type="date" id="kp-fecha-matinal" data-draw="fechaInput" aria-label="Día de la matinal">
+        </label>
+        <label class="kp-field" id="mt-campo-desde" hidden>Desde
+          <input type="date" id="kp-mat-desde" data-draw="matDesdeInput" aria-label="Desde">
+        </label>
+        <label class="kp-field" id="mt-campo-hasta" hidden>Hasta
+          <input type="date" id="kp-mat-hasta" data-draw="matHastaInput" aria-label="Hasta">
+        </label>
+        <div class="kp-daytext">
+          <p class="kp-lead" id="matinal-resumen"><b data-draw="matRango">—</b>: <b data-draw="matOk" data-source="entrega tml rotura">—</b> de <b data-draw="matTot" data-source="entrega tml rotura">—</b> indicadores con objetivo están dentro del target.</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-grid" id="matinal-indicadores" data-draw="matinal" data-source="entrega tml rotura"></div>
+    <section class="kp-sec" id="matinal-semana">
+      <h2 class="kp-h2">Detalle por día</h2>
+      <p class="kp-sub">Con fecha específica, los últimos 7 días hasta ese día; con un período, todos sus días. Verde: en objetivo. Rojo: fuera de objetivo.</p>
+      <div class="kp-scroll kp-tall"><table class="kp-table kp-daily" data-draw="matinalTabla" data-source="entrega tml rotura" aria-label="Matinal de Entrega por día"></table></div>
+    </section>
+    <section class="kp-sec" id="matinal-planes">
+      <div class="lt-cfgbar">
+        <div class="kp-daytext">
+          <h2 class="kp-h2">Planes de acción</h2>
+          <p class="kp-sub">Planes disparados en la reunión diaria, para revisarlos en la siguiente. Se registran en la hoja <b>Planes de Acción</b> de la planilla Reporte KPI y se ven acá al tocar <b>Actualizar datos</b>. Se listan todos los abiertos y los registrados o cerrados en el período elegido.</p>
+        </div>
+        <div class="pl-links"><a class="lt-btn" id="kp-registrar-plan" href="https://docs.google.com/spreadsheets/d/1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc/edit#gid=1324907542" target="_blank" rel="noopener">Registrar plan en Google Sheets ↗</a><a class="lt-btn lt-btn-sec" id="kp-doc-planes" href="https://docs.google.com/document/d/1rq-WyNtmP4i1-_AO6ruO9dCYey7FOqd2a5THhlNfWCk/edit" target="_blank" rel="noopener">Abrir documento de planes ↗</a></div>
+      </div>
+      <form class="pl-form" id="pl-form" novalidate>
+        <h3 class="pl-form-title">Nuevo plan de acción</h3>
+        <div class="pl-grid">
+          <label class="kp-field">Fecha reunión<input type="date" id="pl-fecha" required></label>
+          <label class="kp-field">Indicador
+            <select class="dash-select" id="pl-indicador" required>
+              <option value="">Elegí un indicador</option>
+              <option>Bultos totales</option>
+              <option>Rechazo HL Minorista</option>
+              <option>Rechazo HL Supermercado</option>
+              <option>TML</option>
+              <option>Rotura de entrega</option>
+              <option>Otro</option>
+            </select>
+          </label>
+          <label class="kp-field">Responsable<input type="text" id="pl-responsable" maxlength="120" required placeholder="Nombre y apellido"></label>
+          <label class="kp-field">Fecha compromiso<input type="date" id="pl-compromiso"></label>
+          <label class="kp-field pl-wide">Desvío detectado<textarea id="pl-desvio" rows="2" maxlength="500" placeholder="Qué pasó y cuánto se desvió"></textarea></label>
+          <label class="kp-field pl-wide">Acción<textarea id="pl-accion" rows="2" maxlength="500" required placeholder="Qué se va a hacer"></textarea></label>
+        </div>
+        <div class="pl-actions">
+          <button type="submit" class="lt-btn" id="pl-enviar">Registrar plan</button>
+          <span class="pl-msg" id="pl-msg" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+      <p class="kp-lead" id="planes-resumen"><b data-draw="plAbiertos" data-source="planes">—</b> planes abiertos, de los cuales <b data-draw="plVencidos" data-source="planes">—</b> están vencidos. <b data-draw="plCerrados" data-source="planes">—</b> cerrados en el período.</p>
+      <div class="kp-scroll"><table class="kp-table pl-table" data-draw="planesTabla" data-source="planes" aria-label="Planes de acción"></table></div>
+    </section>
   </section>
 
   <section class="kp-view" id="vista-info" role="tabpanel" hidden>
@@ -752,6 +862,7 @@ dash.draw('scorecard', (el) => {
   }
 });
 
+window.kpSpark = (...a) => kpSpark(...a);
 function kpSpark(card, pts, r) {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -828,7 +939,7 @@ dash.draw('matrix', (el) => {
 (() => {
 
 (() => {
-  const ids = ['vista-tablero', 'vista-tabla', 'vista-info', 'vista-config'];
+  const ids = ['vista-tablero', 'vista-tabla', 'vista-matinal', 'vista-info', 'vista-config'];
   const show = (id, link) => {
     if (!ids.includes(id)) id = ids[0];
     document.querySelectorAll('.kp-view').forEach((s) => { s.hidden = s.id !== id; });
@@ -972,10 +1083,10 @@ dash.draw('tablaDiaria', (el) => {
 });
 
 document.querySelectorAll('#kp-actualizar').forEach((b) => b.addEventListener('click', () => {
-  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi'].forEach((id) => dash.refresh(id));
+  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes'].forEach((id) => dash.refresh(id));
 }));
 dash.onData(() => {
-  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi'];
+  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes'];
   const busy = ids.some((id) => { const d = dash.data(id); return d.status === 'loading' || d.refreshing; });
   document.querySelectorAll('#kp-actualizar').forEach((b) => { b.disabled = busy; b.classList.toggle('is-busy', busy); });
   const caida = ids.some((id) => ['error', 'connect', 'declined'].includes(dash.data(id).status));
@@ -1071,7 +1182,352 @@ dash.draw('fueraPeriodo', (el) => {
   el.append(t, ul);
 });
 
+const kpResumenLoader = ({ answer }) => {
+  const values = answer && answer.values;
+  if (!Array.isArray(values) || !values.length) throw new Error('La hoja Resumen Matinal no devolvió filas.');
+  const head = values[0].map((x) => String(x).trim());
+  const num = (s) => { s = String(s === null || s === undefined ? '' : s).trim(); if (!s) return null; const v = Number(s.replace(',', '.')); return isNaN(v) ? null : v; };
+  const iso = (s) => {
+    s = String(s || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : null;
+  };
+  const rows = [];
+  for (const r of values.slice(1)) {
+    const fecha = iso(r[0]);
+    if (!fecha) continue;
+    const o = { fecha };
+    head.forEach((h, i) => { if (i && h) o[h] = num(r[i]); });
+    rows.push(o);
+  }
+  return { columns: ['fecha'].concat(head.slice(1).filter(Boolean)), rows };
+};
+['tml', 'rotura'].forEach((id) => dash.loader(id, {
+  description: 'Lee la hoja Resumen Matinal: una fila por día (aaaa-mm-dd) con los totales que calculan las fórmulas de la planilla.',
+  fn: kpResumenLoader
+}));
+
+const MATINAL = [
+  { id: 'mt-bultos', titulo: 'Bultos totales', desc: 'Bultos entregados.', metricas: [
+    { etiqueta: 'Bultos', src: 'entrega', campo: 'Bultos Totales', formato: 'numero', agg: 'ultimo' }] },
+  { id: 'mt-rechazos', titulo: 'Rechazos en HL', desc: 'Porcentaje rechazado por canal.', metricas: [
+    { etiqueta: 'Minorista', plan: 'Rechazo HL Minorista', src: 'entrega', campo: 'RCH HL Mino [%]', formato: 'porcentaje', objetivo: 0.03, cond: 'menor o igual', agg: 'promedio' },
+    { etiqueta: 'Supermercado', plan: 'Rechazo HL Supermercado', src: 'entrega', campo: 'RCH HL SMK [%]', formato: 'porcentaje', objetivo: 0.0121, cond: 'menor o igual', agg: 'promedio' }] },
+  { id: 'mt-tml', titulo: 'Tiempo medio de liberación (TML)', desc: 'Promedio entre el ingreso del operario y la salida a la calle, solo primera vuelta.', metricas: [
+    { etiqueta: 'Promedio', plan: 'TML', src: 'tml', campo: 'TML promedio (min)', formato: 'minutos', objetivo: 30, cond: 'menor', agg: 'ponderado', peso: 'Camiones primera vuelta',
+      extra: (filas) => {
+        const n = d3.sum(filas, (r) => r['Camiones primera vuelta'] || 0);
+        const x = d3.sum(filas, (r) => r['Camiones TML > 30 min'] || 0);
+        return n ? x + ' de ' + n + ' camiones superaron 30 min' : '';
+      } },
+    { etiqueta: 'Camiones en objetivo', plan: 'TML', src: 'tml', campo: '% camiones en objetivo', formato: 'porcentaje', objetivo: 0.65, cond: 'mayor o igual', agg: 'ratio',
+      calc: (r) => (r && r['Camiones primera vuelta'] ? (r['Camiones primera vuelta'] - (r['Camiones TML > 30 min'] || 0)) / r['Camiones primera vuelta'] : null),
+      num: (r) => (r['Camiones primera vuelta'] || 0) - (r['Camiones TML > 30 min'] || 0), den: (r) => r['Camiones primera vuelta'] || 0,
+      extra: (filas) => {
+        const n = d3.sum(filas, (r) => r['Camiones primera vuelta'] || 0);
+        const x = d3.sum(filas, (r) => r['Camiones TML > 30 min'] || 0);
+        return n ? (n - x) + ' de ' + n + ' camiones con TML de 30 min o menos' : '';
+      } }] },
+  { id: 'mt-rotura', titulo: 'Rotura de entrega', desc: 'Motivo ROTURA ENTREGA. Objetivo por día.', metricas: [
+    { etiqueta: 'Bultos', plan: 'Rotura de entrega', src: 'rotura', campo: 'Bultos rotos', formato: 'numero', objetivo: 3, cond: 'menor o igual', agg: 'suma', ceroSiFalta: true },
+    { etiqueta: 'Unidades', plan: 'Rotura de entrega', src: 'rotura', campo: 'Unidades rotas', formato: 'numero', objetivo: 24, cond: 'menor o igual', agg: 'suma', ceroSiFalta: true }] }
+];
+const kpSimbolo = (c) => (c === 'menor' ? '<' : KP.sym(c));
+const kpFmtObjLoc = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['$', ''] }).format(',.2~f');
+const kpFmtObj = (v, f) => (f === 'porcentaje' ? kpFmtObjLoc(v * 100) + '%' : f === 'minutos' ? kpFmtObjLoc(v) + ' min' : KP.fmt(v, f));
+const kpCumple = (v, m) => (v === null || v === undefined || m.objetivo === undefined ? '' : (m.cond === 'menor' ? v < m.objetivo : m.cond === 'menor o igual' ? v <= m.objetivo + 1e-9 : v >= m.objetivo - 1e-9) ? 'si' : 'no');
+
+// Período elegido en la pestaña: un día, el mes actual, el mes pasado o un rango.
+const kpMatPeriodo = (st) => {
+  const p = dash.params();
+  const modo = ['dia', 'mes', 'mesant', 'rango'].includes(p.matModo) ? p.matModo : 'dia';
+  const last = st.fechas[st.fechas.length - 1];
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const L = new Date(last + 'T12:00:00Z');
+  let desde, hasta;
+  if (modo === 'dia') { desde = hasta = st.fecha; }
+  else if (modo === 'mes') { desde = last.slice(0, 8) + '01'; hasta = last; }
+  else if (modo === 'mesant') { desde = iso(new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth() - 1, 1))); hasta = iso(new Date(Date.UTC(L.getUTCFullYear(), L.getUTCMonth(), 0))); }
+  else {
+    const ok = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+    const b = new Date(L); b.setUTCDate(b.getUTCDate() - 29);
+    desde = ok(p.matDesde) ? p.matDesde : iso(b);
+    hasta = ok(p.matHasta) ? p.matHasta : last;
+    if (desde > hasta) [desde, hasta] = [hasta, desde];
+  }
+  const dias = st.fechas.filter((f) => f >= desde && f <= hasta);
+  return { modo, desde, hasta, dias, first: st.fechas[0], last };
+};
+
+const kpMat = () => {
+  const st = KP.state();
+  if (st.status !== 'ok') return null;
+  const fuentes = {};
+  for (const id of ['entrega', 'tml', 'rotura']) {
+    const d = dash.data(id);
+    const filas = d.status === 'ok' && Array.isArray(d.data) ? d.data : [];
+    fuentes[id] = { status: d.status, idx: new Map(filas.map((r) => [r.fecha, r])), max: filas.reduce((a, r) => (r.fecha > a ? r.fecha : a), '') };
+  }
+  const valor = (m, f) => {
+    const F = fuentes[m.src];
+    const r = F.idx.get(f);
+    const v = m.calc ? (r ? m.calc(r) : null) : r && r[m.campo] !== undefined ? r[m.campo] : null;
+    if (v === null && m.ceroSiFalta && F.status === 'ok' && f <= F.max) return { v: 0, r: null };
+    return { v, r };
+  };
+  const P = kpMatPeriodo(st);
+  // Valor de una métrica en el período: el del día, o el total / promedio de los días con dato.
+  const resumen = (m) => {
+    const xs = P.dias.map((f) => ({ f, ...valor(m, f) })).filter((x) => x.v !== null);
+    const filas = xs.map((x) => x.r).filter(Boolean);
+    if (P.modo === 'dia') {
+      const x = xs[0];
+      const prev = st.fechas.filter((f) => f <= st.fecha).slice(-30).map((f) => valor(m, f).v).filter((v) => v !== null);
+      return { valor: x ? x.v : null, diario: x ? x.v : null, prom30: prev.length ? d3.mean(prev) : null, n30: prev.length, n: xs.length, ok: x ? (kpCumple(x.v, m) === 'si' ? 1 : 0) : 0, filas, r: x ? x.r : null };
+    }
+    if (!xs.length) return { valor: null, diario: null, n: 0, ok: 0, filas };
+    let diario;
+    if (m.agg === 'ratio') {
+      const den = d3.sum(filas, m.den);
+      diario = den ? d3.sum(filas, m.num) / den : null;
+    } else if (m.agg === 'ponderado') {
+      const w = d3.sum(filas, (r) => r[m.peso] || 0);
+      diario = w ? d3.sum(filas, (r) => (r[m.campo] || 0) * (r[m.peso] || 0)) / w : d3.mean(xs, (x) => x.v);
+    } else diario = d3.mean(xs, (x) => x.v);
+    const total = d3.sum(xs, (x) => x.v);
+    const ultimo = xs[xs.length - 1];
+    return { valor: m.agg === 'suma' ? total : m.agg === 'ultimo' ? ultimo.v : diario, ultimoFecha: ultimo.f, diario, n: xs.length, ok: xs.filter((x) => kpCumple(x.v, m) === 'si').length, filas };
+  };
+  return { st, P, fuentes, valor, resumen };
+};
+
+const kpTxtPeriodo = (P) => {
+  if (P.modo === 'dia') return 'Matinal de Entrega del ' + KP.diaLargo(P.desde);
+  const nom = P.modo === 'mes' ? 'Mes actual' : P.modo === 'mesant' ? 'Mes pasado' : 'Período';
+  return nom + ': del ' + KP.dmy(P.desde) + ' al ' + KP.dmy(P.hasta) + ' (' + P.dias.length + ' días con datos)';
+};
+
+(() => {
+  document.querySelectorAll('[data-mat]').forEach((b) => b.addEventListener('click', () => dash.setParams({ matModo: b.dataset.mat === 'dia' ? null : b.dataset.mat })));
 })();
+dash.onData(() => {
+  const st = KP.state();
+  const modo = st.status === 'ok' ? kpMatPeriodo(st).modo : (dash.params().matModo || 'dia');
+  document.querySelectorAll('[data-mat]').forEach((b) => { b.classList.toggle('is-on', b.dataset.mat === modo); b.setAttribute('aria-pressed', b.dataset.mat === modo ? 'true' : 'false'); });
+  document.querySelectorAll('#mt-campo-dia').forEach((e) => { e.hidden = modo !== 'dia'; });
+  document.querySelectorAll('#mt-campo-desde, #mt-campo-hasta').forEach((e) => { e.hidden = modo !== 'rango'; });
+});
+const kpMatFechaDraw = (key) => (el) => {
+  const M = kpMat(); if (!M) return;
+  el.min = M.P.first; el.max = M.P.last;
+  if (document.activeElement !== el) el.value = M.P[key];
+  el.onchange = () => { if (el.value && el.validity.valid) dash.setParams({ [key === 'desde' ? 'matDesde' : 'matHasta']: el.value }); };
+  el.onblur = () => { const Q = kpMat(); if (Q) el.value = Q.P[key]; };
+};
+dash.draw('matDesdeInput', kpMatFechaDraw('desde'));
+dash.draw('matHastaInput', kpMatFechaDraw('hasta'));
+dash.draw('matRango', (el) => { const M = kpMat(); el.textContent = M ? kpTxtPeriodo(M.P) : '—'; });
+
+dash.draw('matinal', (el) => {
+  const M = kpMat();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', !M);
+  if (!M) return;
+  const { st, P, valor, resumen } = M;
+  const dias = P.modo === 'dia' ? st.fechas.filter((f) => f <= st.fecha).slice(-30) : P.dias;
+  for (const card of MATINAL) {
+    const c = document.createElement('article'); c.className = 'mt-card'; c.id = card.id;
+    const h = document.createElement('h3'); h.textContent = card.titulo;
+    const d = document.createElement('p'); d.className = 'kp-sub'; d.textContent = card.desc;
+    c.append(h, d);
+    for (const m of card.metricas) {
+      const R = resumen(m);
+      const ok = kpCumple(R.diario, m);
+      const row = document.createElement('div'); row.className = 'mt-met' + (ok === 'si' ? ' is-ok' : ok === 'no' ? ' is-bad' : '');
+      const lab = document.createElement('span'); lab.className = 'mt-lab';
+      lab.textContent = m.etiqueta + (P.modo === 'dia' || m.etiqueta === 'Promedio' ? '' : m.agg === 'suma' ? ' · total' : m.agg === 'ultimo' ? ' · ' + KP.dm(R.ultimoFecha || P.hasta) : m.agg === 'ratio' ? ' · período' : ' · promedio');
+      const val = document.createElement('span'); val.className = 'mt-val'; val.textContent = KP.fmt(R.valor, m.formato);
+      if (P.modo === 'dia' && R.r && !m.calc) { val.dataset.source = m.src; val.dataset.field = m.campo; val.dataset.where = 'fecha=' + st.fecha; }
+      else val.dataset.source = m.src;
+      const meta = document.createElement('span'); meta.className = 'mt-meta';
+      const partes = [];
+      if (P.modo !== 'dia' && (m.agg === 'suma' || m.agg === 'ultimo') && R.diario !== null) partes.push('Promedio diario del período ' + KP.fmt(R.diario, m.formato));
+      if (P.modo === 'dia' && m.agg === 'ultimo' && R.prom30 !== null) partes.push('Promedio últimos ' + R.n30 + ' días ' + KP.fmt(R.prom30, m.formato));
+      if (m.objetivo !== undefined) partes.push('Objetivo ' + kpSimbolo(m.cond) + ' ' + kpFmtObj(m.objetivo, m.formato) + (m.agg === 'suma' ? ' por día' : ''));
+      if (P.modo !== 'dia' && m.objetivo !== undefined && R.n) partes.push(R.ok + ' de ' + R.n + ' días en objetivo');
+      if (m.extra && R.filas.length) { const x = m.extra(R.filas); if (x) partes.push(x); }
+      meta.textContent = partes.join(' · ');
+      const pill = document.createElement('span'); pill.className = 'kp-pill';
+      pill.textContent = R.valor === null ? 'Sin dato' : ok === 'si' ? 'En objetivo' : ok === 'no' ? 'Fuera de objetivo' : '';
+      if (!pill.textContent) pill.hidden = true;
+      const top = document.createElement('div'); top.className = 'mt-top'; top.append(lab, pill);
+      row.append(top, val, meta);
+      const pts = dias.map((f) => { const x = valor(m, f); return { fecha: f, valor: x.v, formato: m.formato, cumple: kpCumple(x.v, m) }; }).filter((p) => p.valor !== null);
+      if (pts.length > 1 && window.kpSpark) row.append(window.kpSpark(row, pts, { kpi: card.titulo + ' ' + m.etiqueta, objetivo: m.objetivo === undefined ? null : m.objetivo }));
+      c.append(row);
+    }
+    el.append(c);
+  }
+});
+
+const kpMatCuenta = () => {
+  const M = kpMat(); if (!M) return null;
+  const ev = MATINAL.flatMap((c) => c.metricas).filter((m) => m.objetivo !== undefined).map((m) => kpCumple(M.resumen(m).diario, m)).filter(Boolean);
+  return { ok: ev.filter((x) => x === 'si').length, tot: ev.length };
+};
+dash.draw('matOk', (el) => { const c = kpMatCuenta(); el.textContent = c ? String(c.ok) : '—'; });
+dash.draw('matTot', (el) => { const c = kpMatCuenta(); el.textContent = c ? String(c.tot) : '—'; });
+
+dash.draw('matinalTabla', (el) => {
+  const M = kpMat();
+  el.replaceChildren();
+  if (!M) return;
+  const dias = (M.P.modo === 'dia' ? M.st.fechas.filter((f) => f <= M.st.fecha).slice(-7) : M.P.dias).slice().reverse();
+  const cols = MATINAL.flatMap((c) => c.metricas.map((m) => ({ c, m })));
+  const hr = el.createTHead().insertRow();
+  const h0 = document.createElement('th'); h0.textContent = 'Fecha'; hr.append(h0);
+  cols.forEach(({ c, m }) => {
+    const th = document.createElement('th');
+    const n = document.createElement('span'); n.className = 'kp-hname'; n.textContent = c.id === 'mt-tml' ? 'TML · ' + m.etiqueta : c.metricas.length > 1 ? c.titulo + ' · ' + m.etiqueta : c.titulo;
+    const o = document.createElement('span'); o.className = 'kp-hobj'; o.textContent = m.objetivo !== undefined ? 'Obj. ' + kpSimbolo(m.cond) + ' ' + kpFmtObj(m.objetivo, m.formato) : 'Sin objetivo';
+    th.append(n, o); hr.append(th);
+  });
+  const tb = el.createTBody();
+  if (!dias.length) { const td = tb.insertRow().insertCell(); td.colSpan = cols.length + 1; td.className = 'kp-l kp-muted'; td.textContent = 'No hay días con datos en este período.'; return; }
+  dias.forEach((f) => {
+    const tr = tb.insertRow();
+    const th = document.createElement('th'); th.textContent = KP.diaLargo(f); tr.append(th);
+    cols.forEach(({ m }) => {
+      const { v, r } = M.valor(m, f); const td = tr.insertCell();
+      if (v === null) { td.textContent = '—'; td.className = 'kp-muted'; return; }
+      td.textContent = KP.fmt(v, m.formato);
+      const ok = kpCumple(v, m); if (ok) td.className = ok === 'si' ? 'is-ok' : 'is-bad';
+      if (r && !m.calc) { td.dataset.source = m.src; td.dataset.field = m.campo; td.dataset.where = 'fecha=' + f; }
+    });
+  });
+});
+
+// ===== Planes de acción =====
+dash.loader('planes', {
+  description: 'Lee la hoja Planes de Acción: una fila por plan con fecha de reunión, indicador, desvío, acción, responsable, fecha compromiso, estado, fecha de cierre y seguimiento. Pasa las fechas dd/mm/aaaa a aaaa-mm-dd y descarta filas vacías.',
+  fn: ({ answer }) => {
+    const values = (answer && answer.values) || [];
+    const norm = (s) => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const claves = { 'fecha reunion': 'fecha', 'indicador': 'indicador', 'desvio detectado': 'desvio', 'accion': 'accion', 'responsable': 'responsable', 'fecha compromiso': 'compromiso', 'estado': 'estado', 'fecha cierre': 'cierre', 'seguimiento': 'seguimiento' };
+    const head = (values[0] || []).map((x) => claves[norm(x)] || null);
+    const iso = (s) => {
+      s = String(s || '').trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+      if (!m) return s ? s : '';
+      const y = m[3].length === 2 ? '20' + m[3] : m[3];
+      return y + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0');
+    };
+    const rows = [];
+    values.slice(1).forEach((r, i) => {
+      const o = { fila: String(i + 2), fecha: '', indicador: '', desvio: '', accion: '', responsable: '', compromiso: '', estado: '', cierre: '', seguimiento: '' };
+      head.forEach((k, j) => { if (!k) return; const v = r[j] === undefined ? '' : String(r[j]).trim(); o[k] = ['fecha', 'compromiso', 'cierre'].includes(k) ? iso(v) : v; });
+      if (o.indicador || o.accion || o.desvio) rows.push(o);
+    });
+    return { columns: ['fila', 'fecha', 'indicador', 'desvio', 'accion', 'responsable', 'compromiso', 'estado', 'cierre', 'seguimiento'], rows };
+  }
+});
+
+const kpHoy = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const kpPlanEstado = (p) => {
+  const e = String(p.estado || '').trim().toLowerCase();
+  if (e.startsWith('cerr')) return 'cerrado';
+  if (p.compromiso && /^\d{4}-\d{2}-\d{2}$/.test(p.compromiso) && p.compromiso < kpHoy()) return 'vencido';
+  return e.startsWith('en curso') ? 'curso' : 'pendiente';
+};
+const kpPlanes = () => {
+  const d = dash.data('planes');
+  const M = kpMat();
+  if (d.status !== 'ok' || !Array.isArray(d.data) || !M) return null;
+  const { desde, hasta } = M.P;
+  // Se muestran los planes abiertos (de cualquier fecha) y los registrados en el período elegido.
+  const lista = d.data.filter((p) => kpPlanEstado(p) !== 'cerrado' || (p.fecha >= desde && p.fecha <= hasta) || (p.cierre >= desde && p.cierre <= hasta));
+  const orden = { vencido: 0, pendiente: 1, curso: 2, cerrado: 3 };
+  lista.sort((a, b) => orden[kpPlanEstado(a)] - orden[kpPlanEstado(b)] || String(a.compromiso || '9999').localeCompare(String(b.compromiso || '9999')) || String(b.fecha).localeCompare(String(a.fecha)));
+  return { todos: d.data, lista };
+};
+dash.draw('plAbiertos', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.todos.filter((p) => kpPlanEstado(p) !== 'cerrado').length) : '—'; });
+dash.draw('plVencidos', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.todos.filter((p) => kpPlanEstado(p) === 'vencido').length) : '—'; });
+dash.draw('plCerrados', (el) => { const P = kpPlanes(); el.textContent = P ? String(P.lista.filter((p) => kpPlanEstado(p) === 'cerrado').length) : '—'; });
+dash.draw('planesTabla', (el) => {
+  const P = kpPlanes();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', dash.data('planes').status === 'loading');
+  if (!P) return;
+  const hr = el.createTHead().insertRow();
+  ['Reunión', 'Indicador', 'Desvío detectado', 'Acción', 'Responsable', 'Compromiso', 'Estado', 'Seguimiento'].forEach((t) => { const th = document.createElement('th'); th.textContent = t; hr.append(th); });
+  const tb = el.createTBody();
+  if (!P.lista.length) {
+    const td = tb.insertRow().insertCell(); td.colSpan = 8; td.className = 'kp-l kp-muted';
+    td.textContent = P.todos.length ? 'No hay planes abiertos ni registrados en este período.' : 'Todavía no hay planes registrados. Usá "Registrar plan en Google Sheets" para cargar el primero.';
+    return;
+  }
+  const lbl = { vencido: 'Vencido', pendiente: 'Pendiente', curso: 'En curso', cerrado: 'Cerrado' };
+  for (const p of P.lista) {
+    const est = kpPlanEstado(p);
+    const tr = tb.insertRow(); tr.dataset.key = p.fila; tr.className = 'pl-' + est;
+    const cell = (txt, cls) => { const td = tr.insertCell(); td.className = 'kp-l' + (cls ? ' ' + cls : ''); td.textContent = txt || '—'; return td; };
+    cell(p.fecha ? KP.dmy(p.fecha) : '', 'kp-nowrap');
+    cell(p.indicador, 'kp-nowrap');
+    cell(p.desvio, 'kp-wrap');
+    cell(p.accion, 'kp-wrap');
+    cell(p.responsable, p.responsable ? '' : 'kp-muted');
+    cell(/^\d{4}-\d{2}-\d{2}$/.test(p.compromiso) ? KP.dmy(p.compromiso) : p.compromiso, 'kp-nowrap');
+    const td = tr.insertCell(); td.className = 'kp-l';
+    const pill = document.createElement('span'); pill.className = 'pl-pill pl-' + est;
+    pill.textContent = lbl[est] + (est === 'cerrado' && /^\d{4}-\d{2}-\d{2}$/.test(p.cierre) ? ' ' + KP.dm(p.cierre) : '');
+    td.append(pill);
+    cell(p.seguimiento, 'kp-wrap' + (p.seguimiento ? '' : ' kp-muted'));
+  }
+});
+
+})();
+</script>
+<script>
+// ===== Formulario de planes de acción (versión web) =====
+// Pegá acá la URL de la aplicación web de Apps Script (termina en /exec). Ver README.
+const PLANES_URL = 'https://script.google.com/macros/s/AKfycbxfPb-r5WRQFlxP-NuFIs8WRq7ZtzL-XshzuZJIqXm_eIoGHQm0j5mIKsnvuoFf0qA/exec';
+const PLANES_CLAVE = '2f767f70e243d36a';
+(() => {
+  const f = document.getElementById('pl-form');
+  if (!f) return;
+  const $ = (id) => document.getElementById(id);
+  const hoy = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  $('pl-fecha').value = hoy();
+  const msg = (t, tipo) => { const m = $('pl-msg'); m.textContent = t; m.className = 'pl-msg' + (tipo ? ' is-' + tipo : ''); };
+  f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const datos = {
+      clave: PLANES_CLAVE,
+      fecha: $('pl-fecha').value,
+      indicador: $('pl-indicador').value,
+      desvio: $('pl-desvio').value.trim(),
+      accion: $('pl-accion').value.trim(),
+      responsable: $('pl-responsable').value.trim(),
+      compromiso: $('pl-compromiso').value
+    };
+    if (!datos.indicador || !datos.accion || !datos.responsable) { msg('Completá indicador, acción y responsable.', 'bad'); return; }
+    if (!PLANES_URL) { msg('Falta configurar la URL de Apps Script en el archivo (PLANES_URL). Ver README.', 'bad'); return; }
+    const btn = $('pl-enviar'); btn.disabled = true; msg('Registrando…');
+    try {
+      const r = await fetch(PLANES_URL, { method: 'POST', body: JSON.stringify(datos) });
+      const res = await r.json();
+      if (!res.ok) throw new Error(res.error || 'No se pudo registrar.');
+      msg('Plan registrado en la planilla y en el documento.', 'ok');
+      ['pl-indicador', 'pl-desvio', 'pl-accion', 'pl-responsable', 'pl-compromiso'].forEach((id) => { $(id).value = ''; });
+      setTimeout(() => dash.refresh('planes'), 1500);
+    } catch (e) {
+      msg('No se pudo registrar: ' + (e.message || e) + '. Probá de nuevo o cargalo en la planilla.', 'bad');
+    } finally { btn.disabled = false; }
+  });
+})();
+
 </script>
 <script>dash.start();</script>
 </body>
