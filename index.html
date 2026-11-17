@@ -120,6 +120,43 @@ img { max-width: 100%; }
 .pl-table .pl-msg { display: block; margin-top: 4px; font-size: 11px; color: var(--color-fg-muted); }
 .pl-table .pl-msg.is-ok { color: var(--color-ok); font-weight: 600; }
 .pl-table .pl-msg.is-bad { color: var(--color-bad); font-weight: 600; white-space: normal; max-width: 160px; }
+.pd-filtros { display: flex; gap: var(--cds-gap-lg); align-items: flex-end; flex-wrap: wrap; }
+.pd-check { display: flex; align-items: center; gap: 6px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding-bottom: 8px; }
+.pd-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: var(--cds-gap-md); min-height: 110px; }
+.pd-tile, .pd-turno { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; border-left: 4px solid var(--kp-state, #f07f1d); min-width: 0; }
+.pd-tile.is-ok { --kp-state: var(--color-ok); } .pd-tile.is-bad { --kp-state: var(--color-bad); }
+.pd-tl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--color-fg-muted); }
+.pd-tv { font-size: 1.7rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.pd-tv small { font-size: 12px; font-weight: 500; color: var(--color-fg-muted); }
+.pd-td { font-size: 12px; font-weight: 600; color: var(--color-fg-muted); }
+.pd-td.up, .pd-up { color: var(--color-ok); } .pd-td.down, .pd-down { color: var(--color-bad); }
+.pd-ts { font-size: 12px; color: var(--color-fg-muted); }
+.pd-chart { position: relative; min-height: 180px; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 10px; padding: 8px; }
+.pd-chart svg { display: block; width: 100%; height: auto; }
+.pd-axis text { fill: var(--cds-text-secondary); font-size: 11px; }
+.pd-axis .tick line { stroke: var(--cds-chart-grid); }
+.pd-lbl { fill: var(--color-fg); font-size: 11px; font-weight: 600; }
+.pd-ref { stroke: var(--color-fg); stroke-dasharray: 5 4; stroke-width: 1.2; } .pd-ref-t { fill: var(--color-fg); font-size: 11px; font-weight: 600; }
+.pd-prom { stroke: #f07f1d; stroke-width: 1.5; }
+.pd-lblbg { fill: var(--color-panel); opacity: .92; } .pd-prom-t { fill: #d96d10; font-size: 11px; font-weight: 600; }
+.pd-dos { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--cds-gap-lg); }
+@media (max-width: 860px) { .pd-dos { grid-template-columns: 1fr; } }
+.pd-turnos { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+.kp-table tr.pd-sel th, .kp-table tr.pd-sel td { background: color-mix(in srgb, #f07f1d 10%, transparent); font-weight: 600; }
+.pd-rank tbody tr { cursor: pointer; }
+.pd-rank tr.pd-pocas th, .pd-rank tr.pd-pocas td { color: var(--color-fg-muted); }
+.pd-rank th.kp-l, .pd-rank tbody th { text-align: left; }
+.pd-barcell { position: relative; min-width: 140px; text-align: left !important; }
+.pd-bar { position: absolute; left: 10px; top: 50%; height: 14px; transform: translateY(-50%); max-width: calc(100% - 64px); background: color-mix(in srgb, #f07f1d 35%, transparent); border-radius: 3px; }
+.pd-barcell b { position: relative; float: right; font-variant-numeric: tabular-nums; }
+.pd-ley { display: flex; gap: 16px; font-size: 12px; color: var(--color-fg-muted); margin: 4px 0 8px; }
+.pd-ley span::before { content: ""; display: inline-block; width: 18px; height: 0; border-top: 2.5px solid #f07f1d; margin-right: 6px; vertical-align: middle; }
+.pd-ley .pd-l-gr::before { border-top: 2px dashed var(--cds-chart-muted); }
+.pd-mini { max-width: 760px; }
+.pd-tile-cl { border-left-color: #1b9aaa; }
+.pd-bar-cl { background: color-mix(in srgb, #1b9aaa 30%, transparent); }
+.pd-rank-cl tbody tr { cursor: default; }
+#prod-filtros .kp-chip[aria-pressed="true"] { background: #1a1d22; color: #fff; border-color: #1a1d22; }
 @media (max-width: 640px) { .lt-hright { margin-left: 0; } .lt-brand { padding: 12px 16px; } .lt-nav { padding: 6px 12px; } }
 .kp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
 .kp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -249,6 +286,7 @@ img { max-width: 100%; }
   const REPORTE_KPI = '1k8-svDGsWFJb3oEfg9y5u3kPEPs4jWRfH1Md3JPcMJc';
   const TIEMPOS_ENTREGA = '1pyDSADNMMBXygjJgBY5GnE-yda3tTeYlG0rPMmZ7-Fw';
   const ROTURA_DISTRIBUCION = '15pSk1BJE_LY_P-F-Tt-xmFcLiHNf7ASGE6GRbwtbyQ8';
+  const RESUMEN_PRODUCTIVIDAD = '1a0_2GsFexRZLkDxLOsKUah34SVNYka05DZ0-GmtP_RM';
   const HOJAS = {
     deposito: { planilla: REPORTE_KPI, hoja: 'Deposito' },
     entrega: { planilla: REPORTE_KPI, hoja: 'Entrega' },
@@ -257,7 +295,9 @@ img { max-width: 100%; }
     config_kpi: { planilla: REPORTE_KPI, hoja: 'Config KPI' },
     tml: { planilla: TIEMPOS_ENTREGA, hoja: 'Resumen Matinal' },
     rotura: { planilla: ROTURA_DISTRIBUCION, hoja: 'Resumen Matinal' },
-    planes: { planilla: REPORTE_KPI, hoja: 'Planes de Acción' }
+    planes: { planilla: REPORTE_KPI, hoja: 'Planes de Acción' },
+    prodpick: { planilla: RESUMEN_PRODUCTIVIDAD, hoja: 'Productividad picking' },
+    clasif: { planilla: RESUMEN_PRODUCTIVIDAD, hoja: 'Clasificacion' }
   };
   // Minutos que se reutiliza una lectura antes de volver a pedirla a la planilla (el botón "Actualizar datos" la fuerza).
   const MINUTOS_CACHE = 60;
@@ -413,7 +453,9 @@ img { max-width: 100%; }
   </header>
   <nav class="lt-nav" id="navegacion" role="tablist" aria-label="Vistas">
     <button type="button" role="tab" data-tab="vista-info" aria-selected="false">INFO</button>
-    <div class="lt-grp"><span>KPI</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button><button type="button" role="tab" data-tab="vista-matinal" aria-selected="false">Matinal Entrega</button></div>
+    <div class="lt-grp"><span>RUTINA LOGÍSTICA</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button></div>
+    <div class="lt-grp"><span>ENTREGA</span><button type="button" role="tab" data-tab="vista-matinal" aria-selected="false">Matinal Entrega</button></div>
+    <div class="lt-grp"><span>DEPÓSITO</span><button type="button" role="tab" data-tab="vista-prod" aria-selected="false">Productividad Picking</button><button type="button" role="tab" data-tab="vista-clasif" aria-selected="false">Productividad Clasificación</button></div>
     <button type="button" role="tab" data-tab="vista-config" aria-selected="false">CONFIGURACIÓN</button>
   </nav>
 
@@ -529,6 +571,88 @@ img { max-width: 100%; }
       </form>
       <p class="kp-lead" id="planes-resumen"><b data-draw="plAbiertos" data-source="planes">—</b> planes abiertos, de los cuales <b data-draw="plVencidos" data-source="planes">—</b> están vencidos. <b data-draw="plCerrados" data-source="planes">—</b> cerrados en el período.</p>
       <div class="kp-scroll"><table class="kp-table pl-table" data-draw="planesTabla" data-source="planes" aria-label="Planes de acción"></table></div>
+    </section>
+  </section>
+
+  <section class="kp-view" id="vista-prod" role="tabpanel" hidden>
+    <div class="pd-filtros" id="prod-filtros">
+      <label class="kp-field">Mes
+        <select class="dash-select" id="pd-mes" data-draw="pdMes" aria-label="Mes"></select>
+      </label>
+      <div class="kp-field">Turno
+        <div class="kp-quick" role="group" aria-label="Turno">
+          <button type="button" class="kp-chip" data-pdturno="">Todos</button>
+          <button type="button" class="kp-chip" data-pdturno="Mañana">Mañana</button>
+          <button type="button" class="kp-chip" data-pdturno="Tarde">Tarde</button>
+        </div>
+      </div>
+      <label class="pd-check"><input type="checkbox" id="pd-jornada-mal" checked> Excluir archivos marcados "jornada mal"</label>
+    </div>
+    <p class="kp-lead" id="prod-titulo">Productividad de picking · <b data-draw="pdMesTxt">—</b>. Productividad = bultos pickeados / horas de pickeo. Sin domingos.</p>
+    <div class="pd-tiles" id="prod-kpis" data-draw="pdKpis" data-source="prodpick config_kpi"></div>
+
+    <section class="kp-sec" id="prod-diaria">
+      <h2 class="kp-h2">Productividad diaria grupal</h2>
+      <p class="kp-sub">Bultos por hora de todo el equipo, día por día. Verde: igual o por encima del objetivo de Productividad Picking (Configuración). Rojo: por debajo.</p>
+      <div class="pd-chart" data-draw="pdDiaria" data-source="prodpick"></div>
+    </section>
+
+    <div class="pd-dos">
+      <section class="kp-sec" id="prod-mensual">
+        <h2 class="kp-h2">Comparación mes a mes</h2>
+        <p class="kp-sub">Productividad ponderada de cada mes. En naranja, el mes elegido.</p>
+        <div class="pd-chart" data-draw="pdMensual" data-source="prodpick"></div>
+      </section>
+      <section class="kp-sec" id="prod-turnos">
+        <h2 class="kp-h2">Por turno</h2>
+        <p class="kp-sub">Mañana contra tarde en el mes elegido.</p>
+        <div class="pd-turnos" data-draw="pdTurnos" data-source="prodpick"></div>
+      </section>
+    </div>
+    <div class="kp-scroll"><table class="kp-table" data-draw="pdMensualTabla" data-source="prodpick" aria-label="Resumen mensual de productividad"></table></div>
+
+    <section class="kp-sec" id="prod-ranking">
+      <h2 class="kp-h2">Productividad por persona</h2>
+      <p class="kp-sub">Ranking del mes por bultos/hora. "vs grupo" compara con la productividad del equipo; "Var." con su propio mes anterior. Con menos de 8 horas en el mes quedan al final, en gris. Tocá una fila para ver el detalle.</p>
+      <div class="kp-scroll kp-tall"><table class="kp-table pd-rank" data-draw="pdRanking" data-source="prodpick" aria-label="Ranking de productividad por operario"></table></div>
+    </section>
+
+    <section class="kp-sec" id="prod-persona">
+      <div class="pd-filtros">
+        <h2 class="kp-h2">Detalle por operario</h2>
+        <select class="dash-select" id="pd-operario" data-draw="pdOper" aria-label="Operario"></select>
+      </div>
+      <div data-draw="pdPersona" data-source="prodpick"></div>
+    </section>
+
+  </section>
+
+  <section class="kp-view" id="vista-clasif" role="tabpanel" hidden>
+    <div class="pd-filtros" id="clasif-filtros">
+      <label class="kp-field">Mes
+        <select class="dash-select" id="cl-mes" data-draw="clMes" aria-label="Mes"></select>
+      </label>
+    </div>
+    <p class="kp-lead" id="clasif-titulo">Productividad de clasificación · <b data-draw="clMesTxt">—</b>. Pallets desarmados por hora del equipo, ponderado por las horas de jornada. Sin domingos. Hay datos desde el 08/09/2026.</p>
+    <div class="pd-tiles" id="clasif-kpis" data-draw="clKpis" data-source="clasif"></div>
+
+    <section class="kp-sec" id="clasif-diaria">
+      <h2 class="kp-h2">Productividad diaria</h2>
+      <p class="kp-sub">Pallets por hora del equipo, día por día. Color pleno: igual o por encima del promedio del mes. Color tenue: por debajo.</p>
+      <div class="pd-chart" data-draw="clDiaria" data-source="clasif"></div>
+    </section>
+
+    <section class="kp-sec" id="clasif-mensual">
+      <h2 class="kp-h2">Comparación mes a mes</h2>
+      <p class="kp-sub">Productividad ponderada de cada mes. En naranja, el mes elegido.</p>
+      <div class="pd-chart" data-draw="clMensual" data-source="clasif"></div>
+      <div class="kp-scroll"><table class="kp-table" data-draw="clMensualTabla" data-source="clasif" aria-label="Resumen mensual de clasificación"></table></div>
+    </section>
+
+    <section class="kp-sec" id="clasif-personas">
+      <h2 class="kp-h2">Participación por persona</h2>
+      <p class="kp-sub">Horas de cada operario en clasificación durante el mes y su parte del total. La productividad se registra para todo el equipo, así que "Pallets/h de sus días" es la productividad de los días en que trabajó, no una medición individual.</p>
+      <div class="kp-scroll"><table class="kp-table pd-rank pd-rank-cl" data-draw="clRanking" data-source="clasif" aria-label="Participación por operario en clasificación"></table></div>
     </section>
   </section>
 
@@ -949,10 +1073,11 @@ dash.draw('matrix', (el) => {
 (() => {
 
 (() => {
-  const ids = ['vista-tablero', 'vista-tabla', 'vista-matinal', 'vista-info', 'vista-config'];
+  const ids = ['vista-tablero', 'vista-tabla', 'vista-matinal', 'vista-prod', 'vista-clasif', 'vista-info', 'vista-config'];
   const show = (id, link) => {
     if (!ids.includes(id)) id = ids[0];
     document.querySelectorAll('.kp-view').forEach((s) => { s.hidden = s.id !== id; });
+    document.querySelectorAll('#controles').forEach((c) => { c.hidden = !['vista-tablero', 'vista-tabla', 'vista-config'].includes(id); });
     document.querySelectorAll('[data-tab]').forEach((b) => { b.setAttribute('aria-selected', b.dataset.tab === id ? 'true' : 'false'); b.tabIndex = b.dataset.tab === id ? 0 : -1; });
     if (link) dash.setLink(id);
   };
@@ -1093,10 +1218,10 @@ dash.draw('tablaDiaria', (el) => {
 });
 
 document.querySelectorAll('#kp-actualizar').forEach((b) => b.addEventListener('click', () => {
-  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes'].forEach((id) => dash.refresh(id));
+  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif'].forEach((id) => dash.refresh(id));
 }));
 dash.onData(() => {
-  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes'];
+  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif'];
   const busy = ids.some((id) => { const d = dash.data(id); return d.status === 'loading' || d.refreshing; });
   document.querySelectorAll('#kp-actualizar').forEach((b) => { b.disabled = busy; b.classList.toggle('is-busy', busy); });
   const caida = ids.some((id) => ['error', 'connect', 'declined'].includes(dash.data(id).status));
@@ -1548,6 +1673,459 @@ dash.draw('planesTabla', (el) => {
         msg.textContent = 'No se pudo guardar: ' + (e.message || e); msg.className = 'pl-msg is-bad';
       } finally { btn.disabled = false; }
     };
+  }
+});
+
+// ===== Depósito · Productividades =====
+dash.loader('prodpick', {
+  description: 'Lee la hoja Productividad picking: una fila por operario, turno y día con bultos pickeados, jornada de pickeo, horas computables y observación.',
+  fn: ({ answer }) => {
+    const values = (answer && answer.values) || [];
+    if (!values.length) throw new Error('La hoja Productividad picking no devolvió filas.');
+    const head = values[0].map((x) => String(x).trim());
+    const ix = (n) => head.indexOf(n);
+    const num = (s) => { s = String(s === null || s === undefined ? '' : s).replace(/,/g, '').trim(); if (!s) return null; const v = Number(s); return isNaN(v) ? null : v; };
+    const iso = (s) => { s = String(s || '').trim(); if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : null; };
+    const rows = [];
+    for (const r of values.slice(1)) {
+      const fecha = iso(r[ix('Fecha')]);
+      const operario = String(r[ix('Operario')] || '').trim();
+      if (!fecha || !operario) continue;
+      rows.push({
+        fecha, mes: fecha.slice(0, 7), operario,
+        turno: String(r[ix('Turno')] || '').trim(),
+        bultos: num(r[ix('Bultos pickeados')]) || 0,
+        jornada: num(r[ix('Jornada de pickeo (h)')]),
+        horas: num(r[ix('Horas computables')]) || 0,
+        observacion: String(r[ix('Observación')] || '').trim()
+      });
+    }
+    return { columns: ['fecha', 'mes', 'operario', 'turno', 'bultos', 'jornada', 'horas', 'observacion'], rows };
+  }
+});
+dash.loader('clasif', {
+  description: 'Lee la hoja Clasificacion: una fila por operario y día con jornada (h) y productividad del equipo (pallets desarmados por hora).',
+  fn: ({ answer }) => {
+    const values = (answer && answer.values) || [];
+    if (!values.length) throw new Error('La hoja Clasificacion no devolvió filas.');
+    const head = values[0].map((x) => String(x).trim());
+    const ix = (n) => head.indexOf(n);
+    const num = (s) => { s = String(s === null || s === undefined ? '' : s).replace(/,/g, '').trim(); if (!s) return null; const v = Number(s); return isNaN(v) ? null : v; };
+    const iso = (s) => { s = String(s || '').trim(); if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : null; };
+    const rows = [];
+    for (const r of values.slice(1)) {
+      const fecha = iso(r[ix('Fecha')]);
+      const operario = String(r[ix('Operario')] || '').trim();
+      const prod = num(r[ix('Productividad (pallets/h)')]);
+      if (!fecha || !operario || !prod) continue;
+      rows.push({ fecha, mes: fecha.slice(0, 7), operario, jornada: num(r[ix('Jornada (h)')]) || 0, productividad: prod });
+    }
+    return { columns: ['fecha', 'mes', 'operario', 'jornada', 'productividad'], rows };
+  }
+});
+
+const PD_MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const pdNomMes = (m) => { if (!m) return '—'; const [y, mm] = m.split('-'); return PD_MESES[Number(mm) - 1] + ' ' + y; };
+const pdNomMesCorto = (m) => { const [y, mm] = m.split('-'); return PD_MESES[Number(mm) - 1].slice(0, 3) + ' ' + y.slice(2); };
+const pdMesAnt = (m) => { const [y, mm] = m.split('-').map(Number); const d = new Date(Date.UTC(y, mm - 2, 1)); return d.toISOString().slice(0, 7); };
+const pdLoc = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['$', ''] });
+const pdN0 = pdLoc.format(',.0f'), pdN1 = pdLoc.format(',.1f'), pdN2 = pdLoc.format(',.2f');
+const pdPct = (v) => (v === null || !isFinite(v) ? '—' : (v > 0 ? '+' : '') + pdN1(v * 100) + '%');
+const pdDomingo = (f) => new Date(f + 'T12:00:00Z').getUTCDay() === 0;
+const PD_MIN_HORAS = 8; // menos horas en el mes: no entra al ranking principal
+
+// Objetivo de productividad de picking: el de la Configuración de KPIs (Productividad Picking), si existe.
+const pdObjetivo = () => {
+  const c = dash.data('config_kpi');
+  if (c.status !== 'ok' || !Array.isArray(c.data)) return null;
+  const r = c.data.find((x) => String(x.kpi).trim().toLowerCase() === 'productividad picking');
+  return r && r.objetivo !== null && r.objetivo !== '' ? Number(r.objetivo) : null;
+};
+
+const pdEstado = () => {
+  const d = dash.data('prodpick');
+  if (d.status !== 'ok' || !Array.isArray(d.data)) return { status: d.status };
+  const p = dash.params();
+  const excluir = p.pdJornadaMal !== 'incluir';
+  const turno = ['Mañana', 'Tarde'].includes(p.pdTurno) ? p.pdTurno : '';
+  const base = d.data.filter((r) => !pdDomingo(r.fecha) && (!excluir || !/jornada mal/i.test(r.observacion)));
+  const filas = base.filter((r) => !turno || r.turno === turno);
+  const meses = Array.from(new Set(base.map((r) => r.mes))).sort();
+  const mes = meses.includes(p.pdMes) ? p.pdMes : meses[meses.length - 1];
+  return { status: 'ok', base, filas, meses, mes, turno, excluir };
+};
+// Totales de un grupo de filas: productividad ponderada = bultos / horas computables.
+const pdTot = (fs) => {
+  const bultos = d3.sum(fs, (r) => r.bultos), horas = d3.sum(fs, (r) => r.horas);
+  const dias = new Set(fs.map((r) => r.fecha)).size;
+  const opDias = new Set(fs.map((r) => r.fecha + '|' + r.operario)).size;
+  return { bultos, horas, prod: horas ? bultos / horas : null, dias, pickersDia: dias ? opDias / dias : null, operarios: new Set(fs.map((r) => r.operario)).size };
+};
+
+(() => {
+  document.querySelectorAll('[data-pdturno]').forEach((b) => b.addEventListener('click', () => dash.setParams({ pdTurno: b.dataset.pdturno || null })));
+  document.querySelectorAll('#pd-jornada-mal').forEach((c) => c.addEventListener('change', () => dash.setParams({ pdJornadaMal: c.checked ? null : 'incluir' })));
+})();
+dash.onData(() => {
+  const p = dash.params();
+  document.querySelectorAll('[data-pdturno]').forEach((b) => b.setAttribute('aria-pressed', (b.dataset.pdturno || '') === (p.pdTurno || '') ? 'true' : 'false'));
+  document.querySelectorAll('#pd-jornada-mal').forEach((c) => { c.checked = p.pdJornadaMal !== 'incluir'; });
+});
+
+dash.draw('pdMes', (sel) => {
+  const E = pdEstado();
+  if (E.status !== 'ok') return;
+  sel.replaceChildren(...E.meses.slice().reverse().map((m) => new Option(pdNomMes(m), m)));
+  sel.value = E.mes;
+  sel.onchange = () => dash.setParams({ pdMes: sel.value });
+});
+dash.draw('pdOper', (sel) => {
+  const E = pdEstado();
+  if (E.status !== 'ok') return;
+  const ops = Array.from(d3.rollup(E.filas.filter((r) => r.mes === E.mes), (v) => d3.sum(v, (r) => r.horas), (r) => r.operario)).sort((a, b) => a[0].localeCompare(b[0]));
+  const actual = dash.params().pdOperario;
+  sel.replaceChildren(new Option('Elegí un operario', ''), ...ops.map(([o]) => new Option(o, o)));
+  sel.value = ops.some(([o]) => o === actual) ? actual : '';
+  sel.onchange = () => dash.setParams({ pdOperario: sel.value || null });
+});
+dash.draw('pdMesTxt', (el) => { const E = pdEstado(); el.textContent = E.status === 'ok' ? pdNomMes(E.mes) + (E.turno ? ' · turno ' + E.turno.toLowerCase() : '') : '—'; });
+
+// Tarjetas del mes
+dash.draw('pdKpis', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  const act = pdTot(E.filas.filter((r) => r.mes === E.mes));
+  const ant = pdTot(E.filas.filter((r) => r.mes === pdMesAnt(E.mes)));
+  const obj = pdObjetivo();
+  const porDia = Array.from(d3.group(E.filas.filter((r) => r.mes === E.mes), (r) => r.fecha), ([f, v]) => ({ f, ...pdTot(v) })).filter((x) => x.prod !== null);
+  const mejor = porDia.sort((a, b) => b.prod - a.prod)[0];
+  const tiles = [
+    { t: 'Productividad picking', v: act.prod === null ? '—' : pdN1(act.prod), u: 'bultos/h', d: act.prod && ant.prod ? act.prod / ant.prod - 1 : null, sub: obj ? 'Objetivo ≥ ' + pdN0(obj) : 'Ponderada: bultos / horas', ok: obj && act.prod !== null ? act.prod >= obj : null },
+    { t: 'Bultos pickeados', v: pdN0(act.bultos), u: '', d: act.dias && ant.dias && ant.bultos ? (act.bultos / act.dias) / (ant.bultos / ant.dias) - 1 : null, dTxt: 'por día', sub: act.dias + ' días · ' + (act.dias ? pdN0(act.bultos / act.dias) : '—') + ' bultos por día' },
+    { t: 'Horas de pickeo', v: pdN0(act.horas), u: 'h', d: act.dias && ant.dias && ant.horas ? (act.horas / act.dias) / (ant.horas / ant.dias) - 1 : null, dTxt: 'por día', sub: act.operarios + ' operarios · ' + (act.dias ? pdN1(act.horas / act.dias) : '—') + ' h por día' },
+    { t: 'Pickers por día', v: act.pickersDia === null ? '—' : pdN1(act.pickersDia), u: '', d: act.pickersDia && ant.pickersDia ? act.pickersDia / ant.pickersDia - 1 : null, sub: 'Promedio de operarios por día' },
+    { t: 'Mejor día', v: mejor ? pdN1(mejor.prod) : '—', u: 'bultos/h', d: null, sub: mejor ? KP.diaLargo(mejor.f) + ' · ' + pdN0(mejor.bultos) + ' bultos' : 'Sin datos' }
+  ];
+  for (const t of tiles) {
+    const c = document.createElement('div'); c.className = 'pd-tile' + (t.ok === true ? ' is-ok' : t.ok === false ? ' is-bad' : '');
+    const a = document.createElement('span'); a.className = 'pd-tl'; a.textContent = t.t;
+    const v = document.createElement('span'); v.className = 'pd-tv'; v.textContent = t.v; v.dataset.source = 'prodpick';
+    if (t.u) { const u = document.createElement('small'); u.textContent = ' ' + t.u; v.append(u); }
+    const d = document.createElement('span'); d.className = 'pd-td';
+    if (t.d !== null && isFinite(t.d)) { d.textContent = pdPct(t.d) + (t.dTxt ? ' ' + t.dTxt : '') + ' vs ' + pdNomMesCorto(pdMesAnt(E.mes)); d.classList.add(t.d >= 0 ? 'up' : 'down'); } else d.textContent = ' ';
+    const s = document.createElement('span'); s.className = 'pd-ts'; s.textContent = t.sub;
+    c.append(a, v, d, s); el.append(c);
+  }
+});
+
+// Gráfico de barras genérico con tooltip
+const pdBarras = (el, datos, o) => {
+  const W = Math.max(300, el.clientWidth || 700), H = o.alto || 220, m = { t: 14, r: 10, b: 30, l: 44 };
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', o.aria);
+  const x = d3.scaleBand().domain(datos.map((d) => d.k)).range([m.l, W - m.r]).padding(0.22);
+  const ymax = d3.max(datos, (d) => d.v) || 1;
+  const y = d3.scaleLinear().domain([0, Math.max(ymax, o.ref || 0) * 1.12]).nice().range([H - m.b, m.t]);
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(o.fmtEje || pdN0).tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+  const paso = Math.max(1, Math.ceil(datos.length / Math.floor((W - m.l) / (o.anchoEtiqueta || 44))));
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(datos.map((d) => d.k).filter((k, i) => (datos.length - 1 - i) % paso === 0)).tickFormat(o.fmtX || ((k) => k)).tickSize(0)).call((g) => g.select('.domain').remove()).selectAll('text').attr('dy', '1em');
+  const tip = document.createElement('div'); tip.className = 'kp-tip'; tip.hidden = true; el.append(tip);
+  svg.append('g').selectAll('rect').data(datos).join('rect')
+    .attr('x', (d) => x(d.k)).attr('width', x.bandwidth()).attr('y', (d) => y(d.v)).attr('height', (d) => Math.max(1, y(0) - y(d.v))).attr('rx', 2)
+    .style('fill', (d) => d.color || dash.colors[0]).style('opacity', (d) => (d.tenue ? 0.45 : 0.9))
+    .on('pointermove', (ev, d) => {
+      tip.textContent = o.tip(d); tip.hidden = false;
+      const b = el.getBoundingClientRect();
+      tip.style.left = Math.min(Math.max(ev.clientX - b.left - tip.offsetWidth / 2, 0), b.width - tip.offsetWidth) + 'px';
+      tip.style.top = Math.max(0, ev.clientY - b.top - tip.offsetHeight - 10) + 'px';
+    })
+    .on('pointerleave', () => { tip.hidden = true; });
+  if (o.etiquetas) svg.append('g').selectAll('text').data(datos).join('text').attr('class', 'pd-lbl').attr('x', (d) => x(d.k) + x.bandwidth() / 2).attr('y', (d) => y(d.v) - 4).attr('text-anchor', 'middle').text((d) => o.etiquetas(d));
+  const linea = (val, cls, txt, izq) => {
+    svg.append('line').attr('class', cls).attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(val)).attr('y2', y(val));
+    const t = svg.append('text').attr('class', cls + '-t').attr('x', izq ? m.l + 4 : W - m.r).attr('y', y(val) - 4).attr('text-anchor', izq ? 'start' : 'end').text(txt);
+    const bb = t.node().getBBox(); svg.insert('rect', () => t.node()).attr('class', 'pd-lblbg').attr('x', bb.x - 3).attr('y', bb.y - 1).attr('width', bb.width + 6).attr('height', bb.height + 2).attr('rx', 3);
+  };
+  if (o.ref) linea(o.ref, 'pd-ref', 'Objetivo ' + pdN0(o.ref));
+  if (o.prom) linea(o.prom, 'pd-prom', 'Promedio ' + (o.fmtEje === pdN1 ? pdN2(o.prom) : pdN1(o.prom)), true);
+};
+
+dash.draw('pdDiaria', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  const obj = pdObjetivo();
+  const fs = E.filas.filter((r) => r.mes === E.mes);
+  const datos = Array.from(d3.group(fs, (r) => r.fecha), ([f, v]) => ({ k: f, ...pdTot(v) })).filter((d) => d.prod !== null).sort((a, b) => a.k.localeCompare(b.k)).map((d) => ({ ...d, v: d.prod, color: obj ? (d.prod >= obj ? 'var(--color-ok)' : 'var(--color-bad)') : dash.colors[0] }));
+  if (!datos.length) { el.textContent = 'Sin datos de picking en el mes.'; return; }
+  pdBarras(el, datos, { aria: 'Productividad diaria grupal de picking', ref: obj, prom: pdTot(fs).prod, fmtX: KP.dm, tip: (d) => KP.diaLargo(d.k) + ': ' + pdN1(d.v) + ' bultos/h · ' + pdN0(d.bultos) + ' bultos · ' + pdN1(d.horas) + ' h · ' + d.operarios + ' operarios' });
+});
+
+dash.draw('pdMensual', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const obj = pdObjetivo();
+  const meses = E.meses.filter((m) => m <= E.mes).slice(-12);
+  const datos = meses.map((m) => ({ k: m, ...pdTot(E.filas.filter((r) => r.mes === m)) })).filter((d) => d.prod !== null).map((d) => ({ ...d, v: d.prod, color: d.k === E.mes ? '#f07f1d' : dash.colors[0], tenue: d.k !== E.mes }));
+  if (!datos.length) return;
+  pdBarras(el, datos, { aria: 'Productividad de picking por mes', ref: obj, alto: 200, anchoEtiqueta: 56, fmtX: pdNomMesCorto, etiquetas: (d) => pdN0(d.v), tip: (d) => pdNomMes(d.k) + ': ' + pdN1(d.v) + ' bultos/h · ' + pdN0(d.bultos) + ' bultos · ' + pdN0(d.horas) + ' h' });
+});
+
+dash.draw('pdMensualTabla', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const meses = E.meses.filter((m) => m <= E.mes).slice(-12).reverse();
+  const hr = el.createTHead().insertRow();
+  ['Mes', 'Días', 'Pickers/día', 'Bultos', 'Horas', 'Bultos/h', 'Var. vs mes ant.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  for (const m of meses) {
+    const a = pdTot(E.filas.filter((r) => r.mes === m)), b = pdTot(E.filas.filter((r) => r.mes === pdMesAnt(m)));
+    const tr = tb.insertRow(); if (m === E.mes) tr.className = 'pd-sel';
+    const th = document.createElement('th'); th.textContent = pdNomMes(m); tr.append(th);
+    const var_ = a.prod && b.prod ? a.prod / b.prod - 1 : null;
+    [String(a.dias), a.pickersDia === null ? '—' : pdN1(a.pickersDia), pdN0(a.bultos), pdN0(a.horas), a.prod === null ? '—' : pdN1(a.prod), pdPct(var_)].forEach((t, i) => {
+      const td = tr.insertCell(); td.textContent = t;
+      if (i === 5 && var_ !== null) td.className = var_ >= 0 ? 'pd-up' : 'pd-down';
+    });
+  }
+});
+
+dash.draw('pdRanking', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const fs = E.filas.filter((r) => r.mes === E.mes), fa = E.filas.filter((r) => r.mes === pdMesAnt(E.mes));
+  const grupo = pdTot(fs).prod;
+  const filas = Array.from(d3.group(fs, (r) => r.operario), ([op, v]) => {
+    const t = pdTot(v);
+    const turnos = d3.rollup(v, (x) => d3.sum(x, (r) => r.horas), (r) => r.turno);
+    const turno = Array.from(turnos).sort((a, b) => b[1] - a[1])[0];
+    const ant = pdTot(fa.filter((r) => r.operario === op)).prod;
+    return { op, ...t, turno: turno ? turno[0] : '', ant, pocas: t.horas < PD_MIN_HORAS };
+  }).filter((r) => r.prod !== null).sort((a, b) => (a.pocas - b.pocas) || b.prod - a.prod);
+  const max = d3.max(filas, (r) => r.prod) || 1;
+  const hr = el.createTHead().insertRow();
+  ['#', 'Operario', 'Turno', 'Días', 'Bultos', 'Horas', 'Bultos/h', 'vs grupo', 'Mes ant.', 'Var.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (i === 1 || i === 2) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!filas.length) { const td = tb.insertRow().insertCell(); td.colSpan = 10; td.className = 'kp-l kp-muted'; td.textContent = 'Sin datos en el mes.'; return; }
+  let n = 0;
+  for (const r of filas) {
+    const tr = tb.insertRow(); tr.dataset.key = r.op; if (r.pocas) tr.className = 'pd-pocas';
+    tr.onclick = () => dash.setParams({ pdOperario: r.op });
+    const cell = (t, cls) => { const td = tr.insertCell(); td.textContent = t; if (cls) td.className = cls; return td; };
+    cell(r.pocas ? '' : String(++n), 'kp-muted');
+    const th = document.createElement('th'); th.textContent = r.op; tr.append(th);
+    cell(r.turno, 'kp-l kp-muted');
+    cell(String(r.dias)); cell(pdN0(r.bultos)); cell(pdN1(r.horas));
+    const tdp = tr.insertCell(); tdp.className = 'pd-barcell';
+    const bar = document.createElement('span'); bar.className = 'pd-bar'; bar.style.width = Math.round((r.prod / max) * 100) + '%';
+    const lbl = document.createElement('b'); lbl.textContent = pdN1(r.prod);
+    tdp.append(bar, lbl);
+    const vs = grupo ? r.prod / grupo - 1 : null; const tv = cell(pdPct(vs)); if (vs !== null) tv.className = vs >= 0 ? 'pd-up' : 'pd-down';
+    cell(r.ant === null ? '—' : pdN1(r.ant), 'kp-muted');
+    const va = r.ant ? r.prod / r.ant - 1 : null; const tva = cell(pdPct(va)); if (va !== null) tva.className = va >= 0 ? 'pd-up' : 'pd-down';
+  }
+});
+
+dash.draw('pdTurnos', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  for (const t of ['Mañana', 'Tarde']) {
+    const fs = E.base.filter((r) => r.turno === t);
+    const a = pdTot(fs.filter((r) => r.mes === E.mes)), b = pdTot(fs.filter((r) => r.mes === pdMesAnt(E.mes)));
+    const c = document.createElement('div'); c.className = 'pd-turno';
+    const h = document.createElement('span'); h.className = 'pd-tl'; h.textContent = 'Turno ' + t.toLowerCase();
+    const v = document.createElement('span'); v.className = 'pd-tv'; v.textContent = a.prod === null ? '—' : pdN1(a.prod); v.dataset.source = 'prodpick';
+    const u = document.createElement('small'); u.textContent = ' bultos/h'; v.append(u);
+    const d = document.createElement('span'); d.className = 'pd-td';
+    const var_ = a.prod && b.prod ? a.prod / b.prod - 1 : null;
+    d.textContent = var_ === null ? ' ' : pdPct(var_) + ' vs ' + pdNomMesCorto(pdMesAnt(E.mes)); if (var_ !== null) d.classList.add(var_ >= 0 ? 'up' : 'down');
+    const s = document.createElement('span'); s.className = 'pd-ts'; s.textContent = pdN0(a.bultos) + ' bultos · ' + pdN0(a.horas) + ' h · ' + (a.pickersDia === null ? '—' : pdN1(a.pickersDia)) + ' pickers/día';
+    c.append(h, v, d, s); el.append(c);
+  }
+});
+
+dash.draw('pdPersona', (el) => {
+  const E = pdEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const op = dash.params().pdOperario;
+  if (!op) { const p = document.createElement('p'); p.className = 'kp-sub'; p.textContent = 'Elegí un operario arriba o tocá una fila del ranking para ver su evolución.'; el.append(p); return; }
+  const fs = E.filas.filter((r) => r.mes === E.mes);
+  const dias = Array.from(new Set(fs.map((r) => r.fecha))).sort();
+  const grupoDia = new Map(dias.map((f) => [f, pdTot(fs.filter((r) => r.fecha === f)).prod]));
+  const suyo = dias.map((f) => ({ f, v: pdTot(fs.filter((r) => r.fecha === f && r.operario === op)).prod, g: grupoDia.get(f) }));
+  const tot = pdTot(fs.filter((r) => r.operario === op));
+  const head = document.createElement('p'); head.className = 'kp-lead';
+  head.textContent = op + ' en ' + pdNomMes(E.mes) + ': ' + (tot.prod === null ? 'sin datos' : pdN1(tot.prod) + ' bultos/h en ' + tot.dias + ' días (' + pdN0(tot.bultos) + ' bultos, ' + pdN1(tot.horas) + ' h).');
+  el.append(head);
+  // Línea: el operario vs el grupo, día por día
+  const box = document.createElement('div'); box.className = 'pd-chart'; el.append(box);
+  const W = Math.max(300, box.clientWidth || el.clientWidth || 700), H = 210, m = { t: 14, r: 10, b: 30, l: 44 };
+  const x = d3.scalePoint().domain(dias).range([m.l, W - m.r]).padding(0.5);
+  const vals = suyo.flatMap((d) => [d.v, d.g]).filter((v) => v !== null);
+  const y = d3.scaleLinear().domain([0, (d3.max(vals) || 1) * 1.1]).nice().range([H - m.b, m.t]);
+  const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Productividad diaria de ' + op + ' comparada con el grupo');
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(pdN0).tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+  const paso = Math.max(1, Math.ceil(dias.length / Math.floor((W - m.l) / 44)));
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(dias.filter((k, i) => (dias.length - 1 - i) % paso === 0)).tickFormat(KP.dm).tickSize(0)).call((g) => g.select('.domain').remove()).selectAll('text').attr('dy', '1em');
+  const ln = (k) => d3.line().defined((d) => d[k] !== null).x((d) => x(d.f)).y((d) => y(d[k]));
+  svg.append('path').attr('d', ln('g')(suyo)).style('fill', 'none').style('stroke', 'var(--cds-chart-muted)').style('stroke-width', 2).style('stroke-dasharray', '4 3');
+  svg.append('path').attr('d', ln('v')(suyo.filter((d) => d.v !== null))).style('fill', 'none').style('stroke', '#f07f1d').style('stroke-width', 2.2);
+  const tip = document.createElement('div'); tip.className = 'kp-tip'; tip.hidden = true; box.append(tip);
+  svg.append('g').selectAll('circle').data(suyo.filter((d) => d.v !== null)).join('circle').attr('cx', (d) => x(d.f)).attr('cy', (d) => y(d.v)).attr('r', 4).style('fill', '#f07f1d')
+    .on('pointermove', (ev, d) => { tip.textContent = KP.diaLargo(d.f) + ': ' + pdN1(d.v) + ' bultos/h · grupo ' + pdN1(d.g); tip.hidden = false; const b = box.getBoundingClientRect(); tip.style.left = Math.min(Math.max(ev.clientX - b.left - tip.offsetWidth / 2, 0), b.width - tip.offsetWidth) + 'px'; tip.style.top = Math.max(0, ev.clientY - b.top - tip.offsetHeight - 10) + 'px'; })
+    .on('pointerleave', () => { tip.hidden = true; });
+  const ley = document.createElement('div'); ley.className = 'pd-ley';
+  const l1 = document.createElement('span'); l1.className = 'pd-l-op'; l1.textContent = op;
+  const l2 = document.createElement('span'); l2.className = 'pd-l-gr'; l2.textContent = 'Grupo';
+  ley.append(l1, l2); el.append(ley);
+  // Evolución mensual del operario
+  const meses = E.meses.filter((mm) => mm <= E.mes).slice(-6);
+  const t = document.createElement('table'); t.className = 'kp-table pd-mini';
+  const hr = t.createTHead().insertRow();
+  ['Mes', 'Días', 'Bultos', 'Horas', 'Bultos/h', 'Grupo', 'vs grupo'].forEach((x2, i) => { const th = document.createElement('th'); th.textContent = x2; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = t.createTBody();
+  for (const mm of meses.slice().reverse()) {
+    const a = pdTot(E.filas.filter((r) => r.mes === mm && r.operario === op)); if (a.prod === null) continue;
+    const g = pdTot(E.filas.filter((r) => r.mes === mm)).prod;
+    const tr = tb.insertRow(); const th = document.createElement('th'); th.textContent = pdNomMes(mm); tr.append(th);
+    const vs = g ? a.prod / g - 1 : null;
+    [String(a.dias), pdN0(a.bultos), pdN1(a.horas), pdN1(a.prod), g === null ? '—' : pdN1(g), pdPct(vs)].forEach((x2, i) => { const td = tr.insertCell(); td.textContent = x2; if (i === 5 && vs !== null) td.className = vs >= 0 ? 'pd-up' : 'pd-down'; });
+  }
+  const w = document.createElement('div'); w.className = 'kp-scroll'; w.append(t); el.append(w);
+});
+
+
+// ===== Depósito · Productividad de clasificación =====
+// La productividad (pallets/h) es del equipo para cada día; se pondera por las horas de jornada de cada operario.
+const clEstado = () => {
+  const C = dash.data('clasif');
+  if (C.status !== 'ok' || !Array.isArray(C.data)) return { status: C.status };
+  const base = C.data.filter((r) => !pdDomingo(r.fecha));
+  const meses = Array.from(new Set(base.map((r) => r.mes))).sort();
+  const p = dash.params();
+  const mes = meses.includes(p.clMes) ? p.clMes : meses[meses.length - 1];
+  return { status: 'ok', base, meses, mes };
+};
+const clTot = (fs) => {
+  const horas = d3.sum(fs, (r) => r.jornada);
+  const dias = new Set(fs.map((r) => r.fecha)).size;
+  const opDias = new Set(fs.map((r) => r.fecha + '|' + r.operario)).size;
+  return { horas, prod: horas ? d3.sum(fs, (r) => r.productividad * r.jornada) / horas : (fs.length ? d3.mean(fs, (r) => r.productividad) : null), dias, opDia: dias ? opDias / dias : null, operarios: new Set(fs.map((r) => r.operario)).size, pallets: horas ? d3.sum(fs, (r) => r.productividad * r.jornada) : 0 };
+};
+
+dash.draw('clMes', (sel) => {
+  const E = clEstado();
+  if (E.status !== 'ok') return;
+  sel.replaceChildren(...E.meses.slice().reverse().map((m) => new Option(pdNomMes(m), m)));
+  sel.value = E.mes;
+  sel.onchange = () => dash.setParams({ clMes: sel.value });
+});
+dash.draw('clMesTxt', (el) => { const E = clEstado(); el.textContent = E.status === 'ok' ? pdNomMes(E.mes) : '—'; });
+
+dash.draw('clKpis', (el) => {
+  const E = clEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  if (!E.meses.length) { el.textContent = 'Todavía no hay registros de clasificación.'; return; }
+  const act = clTot(E.base.filter((r) => r.mes === E.mes));
+  const ant = clTot(E.base.filter((r) => r.mes === pdMesAnt(E.mes)));
+  const porDia = Array.from(d3.group(E.base.filter((r) => r.mes === E.mes), (r) => r.fecha), ([f, v]) => ({ f, ...clTot(v) })).filter((x) => x.prod !== null);
+  const mejor = porDia.slice().sort((a, b) => b.prod - a.prod)[0];
+  const peor = porDia.slice().sort((a, b) => a.prod - b.prod)[0];
+  const varPct = (a, b) => (a !== null && b ? a / b - 1 : null);
+  const tiles = [
+    { t: 'Productividad clasificación', v: act.prod === null ? '—' : pdN2(act.prod), u: 'pallets/h', d: varPct(act.prod, ant.prod), sub: 'Ponderada por horas de jornada' },
+    { t: 'Pallets desarmados (estim.)', v: pdN0(act.pallets), u: '', d: act.dias && ant.dias ? varPct(act.pallets / act.dias, ant.pallets / ant.dias) : null, dTxt: 'por día', sub: 'Productividad × horas · ' + (act.dias ? pdN1(act.pallets / act.dias) : '—') + ' por día' },
+    { t: 'Horas de clasificación', v: pdN1(act.horas), u: 'h', d: act.dias && ant.dias ? varPct(act.horas / act.dias, ant.horas / ant.dias) : null, dTxt: 'por día', sub: act.dias + ' días con clasificación' },
+    { t: 'Operarios por día', v: act.opDia === null ? '—' : pdN1(act.opDia), u: '', d: varPct(act.opDia, ant.opDia), sub: act.operarios + ' operarios en el mes' },
+    { t: 'Mejor día', v: mejor ? pdN2(mejor.prod) : '—', u: 'pallets/h', d: null, sub: mejor ? KP.diaLargo(mejor.f) : 'Sin datos' },
+    { t: 'Día más bajo', v: peor ? pdN2(peor.prod) : '—', u: 'pallets/h', d: null, sub: peor ? KP.diaLargo(peor.f) : 'Sin datos' }
+  ];
+  for (const t of tiles) {
+    const c = document.createElement('div'); c.className = 'pd-tile pd-tile-cl';
+    const a = document.createElement('span'); a.className = 'pd-tl'; a.textContent = t.t;
+    const v = document.createElement('span'); v.className = 'pd-tv'; v.textContent = t.v; v.dataset.source = 'clasif';
+    if (t.u) { const u = document.createElement('small'); u.textContent = ' ' + t.u; v.append(u); }
+    const d = document.createElement('span'); d.className = 'pd-td';
+    if (t.d !== null && isFinite(t.d)) { d.textContent = pdPct(t.d) + (t.dTxt ? ' ' + t.dTxt : '') + ' vs ' + pdNomMesCorto(pdMesAnt(E.mes)); d.classList.add(t.d >= 0 ? 'up' : 'down'); } else d.textContent = ' ';
+    const s = document.createElement('span'); s.className = 'pd-ts'; s.textContent = t.sub;
+    c.append(a, v, d, s); el.append(c);
+  }
+});
+
+dash.draw('clDiaria', (el) => {
+  const E = clEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  const fs = E.base.filter((r) => r.mes === E.mes);
+  const tot = clTot(fs);
+  const datos = Array.from(d3.group(fs, (r) => r.fecha), ([f, v]) => ({ k: f, ...clTot(v) })).filter((d) => d.prod !== null).sort((a, b) => a.k.localeCompare(b.k))
+    .map((d) => ({ ...d, v: d.prod, color: tot.prod !== null && d.prod >= tot.prod ? dash.colors[1] : 'color-mix(in srgb, ' + dash.colors[1] + ' 45%, #c3c9d3)' }));
+  if (!datos.length) { const p = document.createElement('p'); p.className = 'kp-sub'; p.textContent = 'Sin registros de clasificación en ' + pdNomMes(E.mes) + '.'; el.append(p); return; }
+  pdBarras(el, datos, { aria: 'Productividad diaria de clasificación', fmtEje: pdN1, prom: tot.prod, fmtX: KP.dm, tip: (d) => KP.diaLargo(d.k) + ': ' + pdN2(d.v) + ' pallets/h · ' + d.operarios + ' operarios · ' + pdN1(d.horas) + ' h' });
+});
+
+dash.draw('clMensual', (el) => {
+  const E = clEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const datos = E.meses.filter((m) => m <= E.mes).slice(-12).map((m) => ({ k: m, ...clTot(E.base.filter((r) => r.mes === m)) })).filter((d) => d.prod !== null)
+    .map((d) => ({ ...d, v: d.prod, color: d.k === E.mes ? '#f07f1d' : dash.colors[1], tenue: d.k !== E.mes }));
+  if (!datos.length) return;
+  pdBarras(el, datos, { aria: 'Productividad de clasificación por mes', alto: 200, anchoEtiqueta: 56, fmtEje: pdN1, fmtX: pdNomMesCorto, etiquetas: (d) => pdN2(d.v), tip: (d) => pdNomMes(d.k) + ': ' + pdN2(d.v) + ' pallets/h · ' + pdN1(d.horas) + ' h · ' + d.dias + ' días' });
+});
+
+dash.draw('clMensualTabla', (el) => {
+  const E = clEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const hr = el.createTHead().insertRow();
+  ['Mes', 'Días', 'Operarios/día', 'Horas', 'Pallets (estim.)', 'Pallets/h', 'Var. vs mes ant.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  for (const m of E.meses.filter((x) => x <= E.mes).slice(-12).reverse()) {
+    const a = clTot(E.base.filter((r) => r.mes === m)), b = clTot(E.base.filter((r) => r.mes === pdMesAnt(m)));
+    const tr = tb.insertRow(); if (m === E.mes) tr.className = 'pd-sel';
+    const th = document.createElement('th'); th.textContent = pdNomMes(m); tr.append(th);
+    const v = a.prod !== null && b.prod ? a.prod / b.prod - 1 : null;
+    [String(a.dias), a.opDia === null ? '—' : pdN1(a.opDia), pdN1(a.horas), pdN0(a.pallets), a.prod === null ? '—' : pdN2(a.prod), pdPct(v)].forEach((t, i) => { const td = tr.insertCell(); td.textContent = t; if (i === 5 && v !== null) td.className = v >= 0 ? 'pd-up' : 'pd-down'; });
+  }
+});
+
+dash.draw('clRanking', (el) => {
+  const E = clEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const fs = E.base.filter((r) => r.mes === E.mes);
+  const grupo = clTot(fs).prod;
+  const filas = Array.from(d3.group(fs, (r) => r.operario), ([op, v]) => ({ op, ...clTot(v), ant: clTot(E.base.filter((r) => r.mes === pdMesAnt(E.mes) && r.operario === op)).prod }))
+    .filter((r) => r.prod !== null).sort((a, b) => b.horas - a.horas);
+  const maxH = d3.max(filas, (r) => r.horas) || 1;
+  const hr = el.createTHead().insertRow();
+  ['Operario', 'Días', 'Horas', 'Participación', 'Pallets/h de sus días', 'vs grupo', 'Mes ant.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!filas.length) { const td = tb.insertRow().insertCell(); td.colSpan = 7; td.className = 'kp-l kp-muted'; td.textContent = 'Sin datos en el mes.'; return; }
+  const totH = d3.sum(filas, (r) => r.horas);
+  for (const r of filas) {
+    const tr = tb.insertRow(); tr.dataset.key = r.op;
+    const th = document.createElement('th'); th.textContent = r.op; tr.append(th);
+    const cell = (t, cls) => { const td = tr.insertCell(); td.textContent = t; if (cls) td.className = cls; return td; };
+    cell(String(r.dias)); cell(pdN1(r.horas));
+    const tdp = tr.insertCell(); tdp.className = 'pd-barcell';
+    const bar = document.createElement('span'); bar.className = 'pd-bar pd-bar-cl'; bar.style.width = Math.round((r.horas / maxH) * 100) + '%';
+    const lbl = document.createElement('b'); lbl.textContent = totH ? pdN0((r.horas / totH) * 100) + '%' : '—';
+    tdp.append(bar, lbl);
+    cell(pdN2(r.prod));
+    const vs = grupo ? r.prod / grupo - 1 : null; const tv = cell(pdPct(vs)); if (vs !== null) tv.className = vs >= 0 ? 'pd-up' : 'pd-down';
+    cell(r.ant === null ? '—' : pdN2(r.ant), 'kp-muted');
   }
 });
 
