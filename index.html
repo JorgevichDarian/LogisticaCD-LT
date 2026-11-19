@@ -157,6 +157,19 @@ img { max-width: 100%; }
 .pd-bar-cl { background: color-mix(in srgb, #1b9aaa 30%, transparent); }
 .pd-rank-cl tbody tr { cursor: default; }
 #prod-filtros .kp-chip[aria-pressed="true"] { background: #1a1d22; color: #fff; border-color: #1a1d22; }
+.pd-tile-ip { border-left-color: #2a78d6; }
+.pd-endlbl { font-size: 11px; fill: var(--color-fg-muted); font-weight: 600; }
+.pd-endlbl.is-act { fill: var(--lt-accent-dark, #d96d10); }
+.ip-pill { display: inline-block; padding: 2px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; }
+.ip-pill.ip-alto { background: #fbe1e1; color: #9b1c1c; }
+.ip-pill.ip-normal { background: #e3edfb; color: #1d4e89; }
+.ip-pill.ip-bajo { background: #eef0f3; color: #667085; }
+.ip-prox th, .ip-prox td { text-align: left; }
+.ip-dos { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.ip-bar { background: color-mix(in srgb, #2a78d6 25%, transparent); }
+.ip-rank th.kp-l, .ip-rank tbody th { text-align: left; }
+.ip-prox td:nth-child(3) { text-align: right; }
+.kp-table tfoot tr.ip-tot th, .kp-table tfoot tr.ip-tot td { font-weight: 700; border-top: 2px solid var(--color-border-line); }
 @media (max-width: 640px) { .lt-hright { margin-left: 0; } .lt-brand { padding: 12px 16px; } .lt-nav { padding: 6px 12px; } }
 .kp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
 .kp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -287,6 +300,7 @@ img { max-width: 100%; }
   const TIEMPOS_ENTREGA = '1pyDSADNMMBXygjJgBY5GnE-yda3tTeYlG0rPMmZ7-Fw';
   const ROTURA_DISTRIBUCION = '15pSk1BJE_LY_P-F-Tt-xmFcLiHNf7ASGE6GRbwtbyQ8';
   const RESUMEN_PRODUCTIVIDAD = '1a0_2GsFexRZLkDxLOsKUah34SVNYka05DZ0-GmtP_RM';
+  const SIC_INTERPLANTAS = '1ZoyxCdlJCz40Yl13XILkTX5EdcuDYh1V8XiPwEf8DDg';
   const HOJAS = {
     deposito: { planilla: REPORTE_KPI, hoja: 'Deposito' },
     entrega: { planilla: REPORTE_KPI, hoja: 'Entrega' },
@@ -297,7 +311,10 @@ img { max-width: 100%; }
     rotura: { planilla: ROTURA_DISTRIBUCION, hoja: 'Resumen Matinal' },
     planes: { planilla: REPORTE_KPI, hoja: 'Planes de Acción' },
     prodpick: { planilla: RESUMEN_PRODUCTIVIDAD, hoja: 'Productividad picking' },
-    clasif: { planilla: RESUMEN_PRODUCTIVIDAD, hoja: 'Clasificacion' }
+    clasif: { planilla: RESUMEN_PRODUCTIVIDAD, hoja: 'Clasificacion' },
+    interp: { planilla: SIC_INTERPLANTAS, hoja: 'Resumen Tablero' },
+    ipcam: { planilla: SIC_INTERPLANTAS, hoja: 'Resumen Camiones', rango: 'A1:E' },
+    iporig: { planilla: SIC_INTERPLANTAS, hoja: 'Resumen Camiones', rango: 'G1:J' }
   };
   // Minutos que se reutiliza una lectura antes de volver a pedirla a la planilla (el botón "Actualizar datos" la fuerza).
   const MINUTOS_CACHE = 60;
@@ -311,7 +328,7 @@ img { max-width: 100%; }
   let pendiente = false;
 
   const urlHoja = (f) =>
-    'https://docs.google.com/spreadsheets/d/' + f.planilla + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(f.hoja);
+    'https://docs.google.com/spreadsheets/d/' + f.planilla + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(f.hoja) + (f.rango ? '&range=' + encodeURIComponent(f.rango) : '');
 
   function parseCSV(t) {
     const rows = []; let row = [], f = '', q = false;
@@ -455,7 +472,7 @@ img { max-width: 100%; }
     <button type="button" role="tab" data-tab="vista-info" aria-selected="false">INFO</button>
     <div class="lt-grp"><span>RUTINA LOGÍSTICA</span><button type="button" role="tab" data-tab="vista-tablero" aria-selected="true">Tablero del día</button><button type="button" role="tab" data-tab="vista-tabla" aria-selected="false">Tabla por período</button></div>
     <div class="lt-grp"><span>ENTREGA</span><button type="button" role="tab" data-tab="vista-matinal" aria-selected="false">Matinal Entrega</button></div>
-    <div class="lt-grp"><span>DEPÓSITO</span><button type="button" role="tab" data-tab="vista-prod" aria-selected="false">Productividad Picking</button><button type="button" role="tab" data-tab="vista-clasif" aria-selected="false">Productividad Clasificación</button></div>
+    <div class="lt-grp"><span>DEPÓSITO</span><button type="button" role="tab" data-tab="vista-prod" aria-selected="false">Productividad Picking</button><button type="button" role="tab" data-tab="vista-clasif" aria-selected="false">Productividad Clasificación</button><button type="button" role="tab" data-tab="vista-interp" aria-selected="false">Interplantas</button></div>
     <button type="button" role="tab" data-tab="vista-config" aria-selected="false">CONFIGURACIÓN</button>
   </nav>
 
@@ -653,6 +670,65 @@ img { max-width: 100%; }
       <h2 class="kp-h2">Participación por persona</h2>
       <p class="kp-sub">Horas de cada operario en clasificación durante el mes y su parte del total. La productividad se registra para todo el equipo, así que "Pallets/h de sus días" es la productividad de los días en que trabajó, no una medición individual.</p>
       <div class="kp-scroll"><table class="kp-table pd-rank pd-rank-cl" data-draw="clRanking" data-source="clasif" aria-label="Participación por operario en clasificación"></table></div>
+    </section>
+  </section>
+
+  <section class="kp-view" id="vista-interp" role="tabpanel" hidden>
+    <div class="pd-filtros" id="interp-filtros">
+      <label class="kp-field">Mes
+        <select class="dash-select" id="ip-mes" data-draw="ipMes" aria-label="Mes"></select>
+      </label>
+    </div>
+    <p class="kp-lead" id="interp-titulo">Interplantas · <b data-draw="ipMesTxt">—</b>. Todo se cuenta por fecha de salida (día de descarga), de lunes a sábado.</p>
+    <div class="pd-tiles" id="interp-kpis" data-draw="ipKpis" data-source="interp"></div>
+
+    <section class="kp-sec" id="interp-diaria">
+      <h2 class="kp-h2">Camiones por día</h2>
+      <p class="kp-sub">Azul: salieron con carga. Gris: salieron vacíos. Tocá o pasá por una barra para ver el detalle y el tiempo de descarga.</p>
+      <div class="pd-chart" data-draw="ipDiaria" data-source="interp"></div>
+    </section>
+
+    <section class="kp-sec" id="interp-acumulado">
+      <h2 class="kp-h2">Acumulado del mes y proyección</h2>
+      <p class="kp-sub">Camiones acumulados día hábil por día hábil. En naranja el mes elegido; en gris los meses anteriores, para comparar el ritmo.</p>
+      <div class="pd-chart" data-draw="ipAcum" data-source="interp"></div>
+    </section>
+
+    <div class="pd-dos">
+      <section class="kp-sec" id="interp-semana">
+        <h2 class="kp-h2">Días críticos de la semana</h2>
+        <p class="kp-sub">Promedio de camiones por día de la semana en los últimos 90 días. Rojo: 20% o más por encima del promedio. Gris: 20% o más por debajo.</p>
+        <div class="pd-chart" data-draw="ipSemana" data-source="interp"></div>
+      </section>
+      <section class="kp-sec" id="interp-proximos">
+        <h2 class="kp-h2">Próximos días hábiles</h2>
+        <p class="kp-sub">Camiones esperados según el promedio de cada día de la semana.</p>
+        <div class="kp-scroll"><table class="kp-table ip-prox" data-draw="ipProxTabla" data-source="interp" aria-label="Proyección de próximos días hábiles"></table></div>
+      </section>
+    </div>
+
+    <section class="kp-sec" id="interp-descarga">
+      <h2 class="kp-h2">Tiempo de descarga por día</h2>
+      <p class="kp-sub">Minutos promedio entre comienzo y fin de descarga. Rojo: 25% o más por encima del promedio del mes. Se descartan registros de más de 8 horas, que son errores de carga.</p>
+      <div class="pd-chart" data-draw="ipDescarga" data-source="interp"></div>
+    </section>
+
+    <div class="pd-dos ip-dos">
+      <section class="kp-sec" id="interp-visitas">
+        <h2 class="kp-h2">Visitas por camión</h2>
+        <p class="kp-sub" data-draw="ipVisitasTxt" data-source="ipcam">—</p>
+        <div class="kp-scroll kp-tall"><table class="kp-table ip-rank" data-draw="ipVisitas" data-source="ipcam" aria-label="Visitas por camión en el mes"></table></div>
+      </section>
+      <section class="kp-sec" id="interp-origen">
+        <h2 class="kp-h2">Camiones por origen</h2>
+        <p class="kp-sub">Cantidad de camiones del mes según su origen, y cuántos salieron vacíos.</p>
+        <div class="kp-scroll"><table class="kp-table ip-rank" data-draw="ipOrigen" data-source="iporig" aria-label="Camiones por origen en el mes"></table></div>
+      </section>
+    </div>
+
+    <section class="kp-sec" id="interp-detalle">
+      <h2 class="kp-h2">Detalle por día de descarga</h2>
+      <div class="kp-scroll kp-tall"><table class="kp-table" data-draw="ipTabla" data-source="interp" aria-label="Interplantas por día de descarga"></table></div>
     </section>
   </section>
 
@@ -1073,7 +1149,7 @@ dash.draw('matrix', (el) => {
 (() => {
 
 (() => {
-  const ids = ['vista-tablero', 'vista-tabla', 'vista-matinal', 'vista-prod', 'vista-clasif', 'vista-info', 'vista-config'];
+  const ids = ['vista-tablero', 'vista-tabla', 'vista-matinal', 'vista-prod', 'vista-clasif', 'vista-interp', 'vista-info', 'vista-config'];
   const show = (id, link) => {
     if (!ids.includes(id)) id = ids[0];
     document.querySelectorAll('.kp-view').forEach((s) => { s.hidden = s.id !== id; });
@@ -1218,10 +1294,10 @@ dash.draw('tablaDiaria', (el) => {
 });
 
 document.querySelectorAll('#kp-actualizar').forEach((b) => b.addEventListener('click', () => {
-  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif'].forEach((id) => dash.refresh(id));
+  ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif', 'interp', 'ipcam', 'iporig'].forEach((id) => dash.refresh(id));
 }));
 dash.onData(() => {
-  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif'];
+  const ids = ['deposito', 'entrega', 'seguridad', 'flota', 'config_kpi', 'tml', 'rotura', 'planes', 'prodpick', 'clasif', 'interp', 'ipcam', 'iporig'];
   const busy = ids.some((id) => { const d = dash.data(id); return d.status === 'loading' || d.refreshing; });
   document.querySelectorAll('#kp-actualizar').forEach((b) => { b.disabled = busy; b.classList.toggle('is-busy', busy); });
   const caida = ids.some((id) => ['error', 'connect', 'declined'].includes(dash.data(id).status));
@@ -2126,6 +2202,340 @@ dash.draw('clRanking', (el) => {
     cell(pdN2(r.prod));
     const vs = grupo ? r.prod / grupo - 1 : null; const tv = cell(pdPct(vs)); if (vs !== null) tv.className = vs >= 0 ? 'pd-up' : 'pd-down';
     cell(r.ant === null ? '—' : pdN2(r.ant), 'kp-muted');
+  }
+});
+
+// ===== Depósito · Interplantas =====
+dash.loader('interp', {
+  description: 'Lee la hoja Resumen Tablero de SIC Interplantas 2026: una fila por fecha de salida con camiones, vacíos, cajones ámbar, aracelli y stella, tiempo de descarga y permanencia, que calculan las fórmulas de la planilla.',
+  fn: ({ answer }) => {
+    const values = (answer && answer.values) || [];
+    if (!values.length) throw new Error('La hoja Resumen Tablero no devolvió filas.');
+    const num = (s) => { s = String(s === null || s === undefined ? '' : s).replace(/,/g, '').trim(); if (!s) return null; const v = Number(s); return isNaN(v) ? null : v; };
+    const rows = [];
+    for (const r of values.slice(1)) {
+      const fecha = String(r[0] || '').trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) continue;
+      rows.push({ fecha, mes: fecha.slice(0, 7), camiones: num(r[1]) || 0, vacios: num(r[2]) || 0, ambar: num(r[3]) || 0, aracelli: num(r[4]) || 0, stella: num(r[5]) || 0, descarga: num(r[6]), descargaMax: num(r[7]), conTiempo: num(r[8]) || 0, permanencia: num(r[9]), conPerm: num(r[10]) || 0 });
+    }
+    return { columns: ['fecha', 'mes', 'camiones', 'vacios', 'ambar', 'aracelli', 'stella', 'descarga', 'descargaMax', 'conTiempo', 'permanencia', 'conPerm'], rows };
+  }
+});
+
+const ipEstado = () => {
+  const d = dash.data('interp');
+  if (d.status !== 'ok' || !Array.isArray(d.data)) return { status: d.status };
+  const base = d.data.filter((r) => !pdDomingo(r.fecha)).sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const meses = Array.from(new Set(base.map((r) => r.mes))).sort();
+  const p = dash.params();
+  const mes = meses.includes(p.ipMes) ? p.ipMes : meses[meses.length - 1];
+  return { status: 'ok', base, meses, mes, ultimo: base.length ? base[base.length - 1].fecha : null };
+};
+const ipTot = (fs) => {
+  const camiones = d3.sum(fs, (r) => r.camiones), vacios = d3.sum(fs, (r) => r.vacios);
+  const ct = d3.sum(fs, (r) => r.conTiempo), cp = d3.sum(fs, (r) => r.conPerm);
+  return {
+    camiones, vacios, dias: fs.length,
+    ambar: d3.sum(fs, (r) => r.ambar), aracelli: d3.sum(fs, (r) => r.aracelli), stella: d3.sum(fs, (r) => r.stella),
+    descarga: ct ? d3.sum(fs, (r) => (r.descarga || 0) * r.conTiempo) / ct : null,
+    permanencia: cp ? d3.sum(fs, (r) => (r.permanencia || 0) * r.conPerm) / cp : null
+  };
+};
+const ipIso = (d) => d.toISOString().slice(0, 10);
+const ipSumarDias = (f, n) => { const d = new Date(f + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return ipIso(d); };
+const ipFinMes = (m) => { const [y, mm] = m.split('-').map(Number); return ipIso(new Date(Date.UTC(y, mm, 0))); };
+// Días hábiles (lunes a sábado) entre dos fechas, ambas incluidas.
+const ipHabiles = (desde, hasta) => { const out = []; for (let f = desde; f <= hasta; f = ipSumarDias(f, 1)) if (!pdDomingo(f)) out.push(f); return out; };
+const IP_DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+// Perfil por día de la semana de los últimos 90 días: promedio de camiones, contando como 0 los días sin interplantas.
+const ipPerfil = (E) => {
+  const hasta = E.ultimo, desde = ipSumarDias(hasta, -89);
+  const idx = new Map(E.base.map((r) => [r.fecha, r.camiones]));
+  const dias = ipHabiles(desde, hasta);
+  const porDia = d3.rollup(dias, (v) => d3.mean(v, (f) => idx.get(f) || 0), (f) => new Date(f + 'T12:00:00Z').getUTCDay());
+  const prom = d3.mean(dias, (f) => idx.get(f) || 0) || 0;
+  return { desde, hasta, porDia, prom };
+};
+
+dash.draw('ipMes', (sel) => {
+  const E = ipEstado();
+  if (E.status !== 'ok') return;
+  sel.replaceChildren(...E.meses.slice().reverse().map((m) => new Option(pdNomMes(m), m)));
+  sel.value = E.mes;
+  sel.onchange = () => dash.setParams({ ipMes: sel.value });
+});
+dash.draw('ipMesTxt', (el) => { const E = ipEstado(); el.textContent = E.status === 'ok' ? pdNomMes(E.mes) : '—'; });
+
+dash.draw('ipKpis', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  const fs = E.base.filter((r) => r.mes === E.mes);
+  const a = ipTot(fs), b = ipTot(E.base.filter((r) => r.mes === pdMesAnt(E.mes)));
+  const habA = ipHabiles(E.mes + '-01', E.mes === E.ultimo.slice(0, 7) ? E.ultimo : ipFinMes(E.mes)).length;
+  const habB = ipHabiles(pdMesAnt(E.mes) + '-01', ipFinMes(pdMesAnt(E.mes))).length;
+  const pico = fs.slice().sort((x, y) => y.camiones - x.camiones)[0];
+  const v = (x, y) => (x !== null && y ? x / y - 1 : null);
+  const cajones = a.ambar + a.aracelli + a.stella;
+  const tiles = [
+    { t: 'Camiones', v: pdN0(a.camiones), u: '', d: habA && habB && b.camiones ? v(a.camiones / habA, b.camiones / habB) : null, dTxt: 'por día', sub: (habA ? pdN1(a.camiones / habA) : '—') + ' por día hábil · ' + a.dias + ' días con arribos' },
+    { t: 'Salieron vacíos', v: pdN0(a.vacios), u: a.camiones ? '(' + pdN0((a.vacios / a.camiones) * 100) + '%)' : '', d: null, sub: pdN0(a.camiones - a.vacios) + ' salieron con carga' },
+    { t: 'Cajones cargados', v: pdN0(cajones), u: '', d: b.ambar + b.aracelli + b.stella && habA && habB ? v(cajones / habA, (b.ambar + b.aracelli + b.stella) / habB) : null, dTxt: 'por día', sub: 'Ámbar ' + pdN0(a.ambar) + ' · Aracelli ' + pdN0(a.aracelli) + ' · Stella ' + pdN0(a.stella) },
+    { t: 'Descarga promedio', v: a.descarga === null ? '—' : pdN0(a.descarga), u: 'min', d: v(a.descarga, b.descarga), inv: true, sub: 'De comienzo a fin de descarga' },
+    { t: 'Permanencia promedio', v: a.permanencia === null ? '—' : pdN1(a.permanencia), u: 'h', d: v(a.permanencia, b.permanencia), inv: true, sub: 'De la llegada a la salida del predio' },
+    { t: 'Día pico', v: pico ? pdN0(pico.camiones) : '—', u: 'camiones', d: null, sub: pico ? KP.diaLargo(pico.fecha) : 'Sin datos' }
+  ];
+  for (const t of tiles) {
+    const c = document.createElement('div'); c.className = 'pd-tile pd-tile-ip';
+    const h = document.createElement('span'); h.className = 'pd-tl'; h.textContent = t.t;
+    const val = document.createElement('span'); val.className = 'pd-tv'; val.textContent = t.v; val.dataset.source = 'interp';
+    if (t.u) { const u = document.createElement('small'); u.textContent = ' ' + t.u; val.append(u); }
+    const d = document.createElement('span'); d.className = 'pd-td';
+    if (t.d !== null && isFinite(t.d)) { d.textContent = pdPct(t.d) + (t.dTxt ? ' ' + t.dTxt : '') + ' vs ' + pdNomMesCorto(pdMesAnt(E.mes)); const bueno = t.inv ? t.d <= 0 : null; if (bueno !== null) d.classList.add(bueno ? 'up' : 'down'); } else d.textContent = ' ';
+    const s = document.createElement('span'); s.className = 'pd-ts'; s.textContent = t.sub;
+    c.append(h, val, d, s); el.append(c);
+  }
+});
+
+// Camiones por día: con carga y vacíos apilados
+dash.draw('ipDiaria', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', E.status === 'loading');
+  if (E.status !== 'ok') return;
+  const idx = new Map(E.base.filter((r) => r.mes === E.mes).map((r) => [r.fecha, r]));
+  const fin = E.mes === E.ultimo.slice(0, 7) ? E.ultimo : ipFinMes(E.mes);
+  const dias = ipHabiles(E.mes + '-01', fin);
+  const datos = dias.map((f) => { const r = idx.get(f) || { camiones: 0, vacios: 0, descarga: null }; return { f, carga: r.camiones - r.vacios, vacios: r.vacios, total: r.camiones, descarga: r.descarga }; });
+  const W = Math.max(300, el.clientWidth || 700), H = 230, m = { t: 14, r: 10, b: 30, l: 34 };
+  const x = d3.scaleBand().domain(dias).range([m.l, W - m.r]).padding(0.2);
+  const y = d3.scaleLinear().domain([0, Math.max(4, d3.max(datos, (d) => d.total) || 0) * 1.12]).nice().range([H - m.b, m.t]);
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Camiones de interplanta por día, con carga y vacíos');
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(pdN0).tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+  const paso = Math.max(1, Math.ceil(dias.length / Math.floor((W - m.l) / 44)));
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(dias.filter((k, i) => (dias.length - 1 - i) % paso === 0)).tickFormat(KP.dm).tickSize(0)).call((g) => g.select('.domain').remove()).selectAll('text').attr('dy', '1em');
+  const prom = dias.length ? d3.sum(datos, (d) => d.total) / dias.length : 0;
+  const tip = document.createElement('div'); tip.className = 'kp-tip'; tip.hidden = true; el.append(tip);
+  const g = svg.append('g').selectAll('g').data(datos).join('g');
+  g.append('rect').attr('x', (d) => x(d.f)).attr('width', x.bandwidth()).attr('y', (d) => y(d.carga)).attr('height', (d) => y(0) - y(d.carga)).style('fill', dash.colors[0]);
+  g.append('rect').attr('x', (d) => x(d.f)).attr('width', x.bandwidth()).attr('y', (d) => y(d.total)).attr('height', (d) => y(d.carga) - y(d.total)).style('fill', 'var(--cds-chart-muted)');
+  g.append('rect').attr('x', (d) => x(d.f)).attr('width', x.bandwidth()).attr('y', m.t).attr('height', H - m.b - m.t).style('fill', 'transparent')
+    .on('pointermove', (ev, d) => { tip.textContent = KP.diaLargo(d.f) + ': ' + d.total + ' camiones (' + d.carga + ' con carga, ' + d.vacios + ' vacíos)' + (d.descarga !== null ? ' · descarga ' + pdN0(d.descarga) + ' min' : ''); tip.hidden = false; const b = el.getBoundingClientRect(); tip.style.left = Math.min(Math.max(ev.clientX - b.left - tip.offsetWidth / 2, 0), b.width - tip.offsetWidth) + 'px'; tip.style.top = Math.max(0, ev.clientY - b.top - tip.offsetHeight - 10) + 'px'; })
+    .on('pointerleave', () => { tip.hidden = true; });
+  if (prom) {
+    svg.append('line').attr('class', 'pd-prom').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(prom)).attr('y2', y(prom));
+    svg.append('text').attr('class', 'pd-prom-t').attr('x', W - m.r).attr('y', y(prom) - 4).attr('text-anchor', 'end').text('Promedio ' + pdN1(prom) + ' por día hábil');
+  }
+});
+
+// Acumulado del mes vs meses anteriores, con proyección al cierre
+dash.draw('ipAcum', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const meses = E.meses.filter((m) => m <= E.mes).slice(-4);
+  const serie = (m) => {
+    const idx = new Map(E.base.filter((r) => r.mes === m).map((r) => [r.fecha, r.camiones]));
+    const fin = m === E.ultimo.slice(0, 7) ? E.ultimo : ipFinMes(m);
+    let acc = 0;
+    return ipHabiles(m + '-01', fin).map((f, i) => ({ i: i + 1, f, v: (acc += idx.get(f) || 0) }));
+  };
+  const series = meses.map((m) => ({ m, pts: serie(m) }));
+  const actual = series[series.length - 1];
+  // Proyección: ritmo de los días hábiles transcurridos aplicado a los que faltan para el cierre del mes.
+  let proy = null;
+  if (E.mes === E.ultimo.slice(0, 7) && actual.pts.length) {
+    const resto = ipHabiles(ipSumarDias(E.ultimo, 1), ipFinMes(E.mes));
+    const ultimoPt = actual.pts[actual.pts.length - 1];
+    const ritmo = ultimoPt.v / actual.pts.length;
+    if (resto.length) proy = { pts: [ultimoPt].concat(resto.map((f, k) => ({ i: actual.pts.length + k + 1, f, v: ultimoPt.v + ritmo * (k + 1) }))), total: ultimoPt.v + ritmo * resto.length, ritmo };
+  }
+  const maxI = Math.max(d3.max(series, (s) => s.pts.length) || 1, proy ? proy.pts[proy.pts.length - 1].i : 0);
+  const maxV = Math.max(d3.max(series, (s) => d3.max(s.pts, (p) => p.v) || 0) || 1, proy ? proy.total : 0);
+  const W = Math.max(300, el.clientWidth || 700), H = 250, m = { t: 14, r: 96, b: 30, l: 40 };
+  const x = d3.scaleLinear().domain([1, maxI]).range([m.l, W - m.r]);
+  const y = d3.scaleLinear().domain([0, maxV * 1.08]).nice().range([H - m.b, m.t]);
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Camiones acumulados por día hábil del mes, comparado con meses anteriores');
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(pdN0).tickSize(-(W - m.l - m.r))).call((g) => g.select('.domain').remove());
+  svg.append('g').attr('class', 'pd-axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.min(maxI, 8)).tickFormat((d) => 'día ' + d).tickSize(0)).call((g) => g.select('.domain').remove()).selectAll('text').attr('dy', '1em');
+  const ln = d3.line().x((p) => x(p.i)).y((p) => y(p.v));
+  const colores = ['#c3c9d3', '#a7b3c2', '#7f8fa3'];
+  series.forEach((s, k) => {
+    const esActual = s === actual;
+    svg.append('path').attr('d', ln(s.pts)).style('fill', 'none').style('stroke', esActual ? 'var(--lt-accent, #f07f1d)' : colores[k % colores.length]).style('stroke-width', esActual ? 2.6 : 1.6);
+    const u = s.pts[s.pts.length - 1];
+    if (u) svg.append('text').attr('class', 'pd-endlbl' + (esActual ? ' is-act' : '')).attr('x', x(u.i) + 6).attr('y', y(u.v) + 4).text(pdNomMesCorto(s.m) + ' ' + pdN0(u.v));
+  });
+  if (proy) {
+    svg.append('path').attr('d', ln(proy.pts)).style('fill', 'none').style('stroke', 'var(--lt-accent, #f07f1d)').style('stroke-width', 2).style('stroke-dasharray', '5 4');
+    const u = proy.pts[proy.pts.length - 1];
+    svg.append('text').attr('class', 'pd-endlbl is-act').attr('x', x(u.i) + 6).attr('y', y(u.v) + 4).text('≈ ' + pdN0(u.v) + ' al cierre');
+  }
+  const nota = document.createElement('p'); nota.className = 'kp-sub';
+  nota.textContent = proy ? 'Proyección: al ritmo actual de ' + pdN1(proy.ritmo) + ' camiones por día hábil, el mes cerraría con unos ' + pdN0(proy.total) + ' camiones (línea punteada).' : 'El mes elegido está cerrado: no hay proyección.';
+  el.append(nota);
+});
+
+// Perfil por día de la semana y próximos días hábiles
+dash.draw('ipSemana', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok' || !E.ultimo) return;
+  const P = ipPerfil(E);
+  const datos = [1, 2, 3, 4, 5, 6].map((d) => ({ k: IP_DIAS[d], v: P.porDia.get(d) || 0 }));
+  const max = d3.max(datos, (d) => d.v) || 1;
+  const datos2 = datos.map((d) => ({ ...d, color: d.v >= P.prom * 1.2 ? 'var(--color-bad)' : d.v <= P.prom * 0.8 ? 'var(--cds-chart-muted)' : dash.colors[0] }));
+  pdBarras(el, datos2, { aria: 'Promedio de camiones por día de la semana, últimos 90 días', alto: 200, anchoEtiqueta: 70, fmtEje: pdN1, prom: P.prom, etiquetas: (d) => pdN1(d.v), tip: (d) => d.k + ': ' + pdN1(d.v) + ' camiones en promedio (' + pdN0((d.v / max) * 100) + '% del día más cargado)' });
+});
+
+dash.draw('ipProxTabla', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok' || !E.ultimo) return;
+  const P = ipPerfil(E);
+  const prox = ipHabiles(ipSumarDias(E.ultimo, 1), ipSumarDias(E.ultimo, 16)).slice(0, 12);
+  const hr = el.createTHead().insertRow();
+  ['Fecha', 'Día', 'Camiones esperados', 'Nivel'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (i < 2 || i === 3) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  for (const f of prox) {
+    const dow = new Date(f + 'T12:00:00Z').getUTCDay();
+    const e = P.porDia.get(dow) || 0;
+    const nivel = e >= P.prom * 1.2 ? 'alto' : e <= P.prom * 0.8 ? 'bajo' : 'normal';
+    const tr = tb.insertRow(); tr.className = 'ip-' + nivel;
+    const th = document.createElement('th'); th.textContent = KP.dmy(f); tr.append(th);
+    const td1 = tr.insertCell(); td1.className = 'kp-l'; td1.textContent = IP_DIAS[dow];
+    const td2 = tr.insertCell(); td2.textContent = pdN1(e);
+    const td3 = tr.insertCell(); td3.className = 'kp-l';
+    const p = document.createElement('span'); p.className = 'ip-pill ip-' + nivel; p.textContent = nivel === 'alto' ? 'Día crítico' : nivel === 'bajo' ? 'Bajo' : 'Normal';
+    td3.append(p);
+  }
+});
+
+dash.draw('ipDescarga', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const fs = E.base.filter((r) => r.mes === E.mes && r.descarga !== null);
+  if (!fs.length) { const p = document.createElement('p'); p.className = 'kp-sub'; p.textContent = 'Sin tiempos de descarga en el mes.'; el.append(p); return; }
+  const t = ipTot(fs);
+  pdBarras(el, fs.map((r) => ({ k: r.fecha, v: r.descarga, max: r.descargaMax, n: r.conTiempo, color: r.descarga > (t.descarga || 0) * 1.25 ? 'var(--color-bad)' : dash.colors[1] })), { aria: 'Tiempo promedio de descarga por día', alto: 190, prom: t.descarga, fmtX: KP.dm, tip: (d) => KP.diaLargo(d.k) + ': ' + pdN0(d.v) + ' min en promedio · máximo ' + pdN0(d.max) + ' min · ' + d.n + ' camiones' });
+});
+
+dash.draw('ipTabla', (el) => {
+  const E = ipEstado();
+  el.replaceChildren();
+  if (E.status !== 'ok') return;
+  const fs = E.base.filter((r) => r.mes === E.mes).slice().reverse();
+  const hr = el.createTHead().insertRow();
+  ['Fecha salida', 'Camiones', 'Vacíos', '% vacíos', 'Ámbar', 'Aracelli', 'Stella', 'Total cajones', 'Descarga prom. (min)', 'Descarga máx. (min)', 'Permanencia prom. (h)'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!fs.length) { const td = tb.insertRow().insertCell(); td.colSpan = 11; td.className = 'kp-l kp-muted'; td.textContent = 'Sin interplantas en el mes.'; return; }
+  const t = ipTot(fs);
+  for (const r of fs) {
+    const tr = tb.insertRow(); tr.dataset.key = r.fecha;
+    const th = document.createElement('th'); th.textContent = KP.diaLargo(r.fecha); tr.append(th);
+    const vals = [pdN0(r.camiones), pdN0(r.vacios), r.camiones ? pdN0((r.vacios / r.camiones) * 100) + '%' : '—', pdN0(r.ambar), pdN0(r.aracelli), pdN0(r.stella), pdN0(r.ambar + r.aracelli + r.stella), r.descarga === null ? '—' : pdN0(r.descarga), r.descargaMax === null ? '—' : pdN0(r.descargaMax), r.permanencia === null ? '—' : pdN1(r.permanencia)];
+    vals.forEach((v, i) => { const td = tr.insertCell(); td.textContent = v; if (i === 7 && r.descarga !== null && t.descarga && r.descarga > t.descarga * 1.25) td.className = 'is-bad'; });
+  }
+  const tf = el.createTFoot().insertRow(); tf.className = 'ip-tot';
+  const th = document.createElement('th'); th.textContent = 'Total del mes'; tf.append(th);
+  [pdN0(t.camiones), pdN0(t.vacios), t.camiones ? pdN0((t.vacios / t.camiones) * 100) + '%' : '—', pdN0(t.ambar), pdN0(t.aracelli), pdN0(t.stella), pdN0(t.ambar + t.aracelli + t.stella), t.descarga === null ? '—' : pdN0(t.descarga), '', t.permanencia === null ? '—' : pdN1(t.permanencia)].forEach((v) => { const td = tf.insertCell(); td.textContent = v; });
+});
+
+// Visitas por camión y camiones por origen (hoja Resumen Camiones)
+const ipLeerTabla = (answer, claves) => {
+  const values = (answer && answer.values) || [];
+  if (!values.length) throw new Error('La hoja Resumen Camiones no devolvió filas.');
+  const rows = [];
+  for (const r of values.slice(1)) {
+    const mes = String(r[0] || '').trim();
+    if (!/^\d{4}-\d{2}$/.test(mes)) continue;
+    const o = { mes };
+    claves.forEach((k, i) => { const v = r[i + 1] === undefined ? '' : String(r[i + 1]).trim(); o[k.n] = k.num ? Number(v.replace(/,/g, '')) || 0 : v; });
+    rows.push(o);
+  }
+  return { columns: ['mes'].concat(claves.map((k) => k.n)), rows };
+};
+dash.loader('ipcam', {
+  description: 'Lee la tabla de camiones de la hoja Resumen Camiones: por mes de salida y patente, transporte, visitas y cuántas salieron vacíos (sin domingos).',
+  fn: ({ answer }) => ipLeerTabla(answer, [{ n: 'patente' }, { n: 'transporte' }, { n: 'visitas', num: true }, { n: 'vacios', num: true }])
+});
+dash.loader('iporig', {
+  description: 'Lee la tabla de orígenes de la hoja Resumen Camiones: por mes de salida y origen, camiones y vacíos (sin domingos). Une MZA y MENDOZA como Mendoza.',
+  fn: ({ answer }) => {
+    const t = ipLeerTabla(answer, [{ n: 'origen' }, { n: 'camiones', num: true }, { n: 'vacios', num: true }]);
+    const alias = { MZA: 'MENDOZA', 'MZA.': 'MENDOZA' };
+    const m = new Map();
+    for (const r of t.rows) {
+      const origen = alias[r.origen] || r.origen;
+      const k = r.mes + '|' + origen;
+      const a = m.get(k) || { mes: r.mes, origen, camiones: 0, vacios: 0 };
+      a.camiones += r.camiones; a.vacios += r.vacios; m.set(k, a);
+    }
+    return { columns: t.columns, rows: Array.from(m.values()) };
+  }
+});
+const ipTitulo = (s) => s.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+
+dash.draw('ipOrigen', (el) => {
+  const E = ipEstado();
+  const D = dash.data('iporig');
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', D.status === 'loading');
+  if (E.status !== 'ok' || D.status !== 'ok') return;
+  const fs = D.data.filter((r) => r.mes === E.mes).sort((a, b) => b.camiones - a.camiones);
+  const ant = new Map(D.data.filter((r) => r.mes === pdMesAnt(E.mes)).map((r) => [r.origen, r.camiones]));
+  const tot = d3.sum(fs, (r) => r.camiones);
+  const hr = el.createTHead().insertRow();
+  ['Origen', 'Camiones', '% del total', 'Vacíos', 'Mes ant.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (!i) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!fs.length) { const td = tb.insertRow().insertCell(); td.colSpan = 5; td.className = 'kp-l kp-muted'; td.textContent = 'Sin datos en el mes.'; return; }
+  const max = fs[0].camiones || 1;
+  for (const r of fs) {
+    const tr = tb.insertRow(); tr.dataset.key = r.origen;
+    const th = document.createElement('th'); th.textContent = ipTitulo(r.origen); tr.append(th);
+    const tdc = tr.insertCell(); tdc.className = 'pd-barcell';
+    const bar = document.createElement('span'); bar.className = 'pd-bar ip-bar'; bar.style.width = Math.round((r.camiones / max) * 100) + '%';
+    const b = document.createElement('b'); b.textContent = pdN0(r.camiones); tdc.append(bar, b);
+    const c = (t, cls) => { const td = tr.insertCell(); td.textContent = t; if (cls) td.className = cls; };
+    c(tot ? pdN0((r.camiones / tot) * 100) + '%' : '—');
+    c(pdN0(r.vacios) + (r.camiones ? ' (' + pdN0((r.vacios / r.camiones) * 100) + '%)' : ''));
+    c(ant.has(r.origen) ? pdN0(ant.get(r.origen)) : '—', 'kp-muted');
+  }
+});
+
+dash.draw('ipVisitasTxt', (el) => {
+  const E = ipEstado();
+  const D = dash.data('ipcam');
+  if (E.status !== 'ok' || D.status !== 'ok') { el.textContent = '—'; return; }
+  const fs = D.data.filter((r) => r.mes === E.mes);
+  const rep = fs.filter((r) => r.visitas > 1).length;
+  el.textContent = fs.length + ' camiones distintos en ' + pdNomMes(E.mes) + '; ' + rep + ' vinieron más de una vez.';
+});
+
+dash.draw('ipVisitas', (el) => {
+  const E = ipEstado();
+  const D = dash.data('ipcam');
+  el.replaceChildren();
+  el.classList.toggle('dash-skeleton', D.status === 'loading');
+  if (E.status !== 'ok' || D.status !== 'ok') return;
+  const fs = D.data.filter((r) => r.mes === E.mes).sort((a, b) => b.visitas - a.visitas || a.patente.localeCompare(b.patente));
+  const ant = new Map(D.data.filter((r) => r.mes === pdMesAnt(E.mes)).map((r) => [r.patente, r.visitas]));
+  const hr = el.createTHead().insertRow();
+  ['Patente', 'Transporte', 'Visitas', 'Vacíos', 'Con carga', 'Mes ant.'].forEach((t, i) => { const th = document.createElement('th'); th.textContent = t; if (i < 2) th.className = 'kp-l'; hr.append(th); });
+  const tb = el.createTBody();
+  if (!fs.length) { const td = tb.insertRow().insertCell(); td.colSpan = 6; td.className = 'kp-l kp-muted'; td.textContent = 'Sin datos en el mes.'; return; }
+  const max = fs[0].visitas || 1;
+  for (const r of fs) {
+    const tr = tb.insertRow(); tr.dataset.key = r.patente;
+    const th = document.createElement('th'); th.textContent = r.patente; tr.append(th);
+    const t1 = tr.insertCell(); t1.className = 'kp-l kp-muted'; t1.textContent = r.transporte || '—';
+    const tdv = tr.insertCell(); tdv.className = 'pd-barcell';
+    const bar = document.createElement('span'); bar.className = 'pd-bar ip-bar'; bar.style.width = Math.round((r.visitas / max) * 100) + '%';
+    const b = document.createElement('b'); b.textContent = pdN0(r.visitas); tdv.append(bar, b);
+    const c = (t, cls) => { const td = tr.insertCell(); td.textContent = t; if (cls) td.className = cls; };
+    c(pdN0(r.vacios)); c(pdN0(r.visitas - r.vacios)); c(ant.has(r.patente) ? pdN0(ant.get(r.patente)) : '—', 'kp-muted');
   }
 });
 
